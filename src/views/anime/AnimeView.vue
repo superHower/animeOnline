@@ -18,6 +18,16 @@ const timeList = [
   '2000年之前'
 ]
 const nationList = ref([])
+const iList = ref([
+    "mzt",
+    "guimie",
+    '@/assets/image/douluo.png',
+    '@/assets/image/Ameng.png',
+    '@/assets/image/daojian.png',
+    '@/assets/image/xiyy.png',
+    '@/assets/image/cat.png'
+
+])
 
 const loading = ref(false)
 const animeEditRef = ref()
@@ -43,11 +53,13 @@ const getAnimeList = async () => {
   console.log(animeList.value)
 
   animeList.value.forEach((anime) => {
+    anime.image = iList.value[anime.id-1]
     if (!nationList.value.includes(anime.nation)) {
       nationList.value.push(anime.nation);
     }
   });
-  console.log(nationList.value)
+  console.log("地区：" + nationList.value)
+  console.log(animeList.value)
   loading.value = false
 }
 
@@ -137,7 +149,7 @@ const onSearchByCondition = async () => {
     </el-form>
 <!--    轮播图  -->
     <el-carousel :interval="4000" type="card" height="300px" style="margin: 5px">
-      <el-carousel-item ><img src="@/assets/image/甘雨.jpg" class="image" alt=""/></el-carousel-item>
+      <el-carousel-item ><img src="@/assets/image/将军.jpg" class="image" alt=""/></el-carousel-item>
       <el-carousel-item ><img src="@/assets/image/绫华.png" class="image" alt=""/></el-carousel-item>
       <el-carousel-item ><img src="@/assets/image/夜兰.png" class="image" alt=""/></el-carousel-item>
       <el-carousel-item ><img src="@/assets/image/妮露.png" class="image" alt=""/></el-carousel-item>
@@ -146,7 +158,8 @@ const onSearchByCondition = async () => {
     <el-row>
       <el-col v-for="(anime, index) in animeList" :key="index" :span="5" :offset="1">
         <el-card :body-style="{ padding: '0px' }">
-          <img src="@/assets/image/橙色3.jpg" class="image"  @click="openAnime(anime.id)"/>
+          <img src="@/assets/image/daojian.png" class="image" @click="openAnime(anime.id)" />
+
           <div style="padding: 14px">
             <span>{{anime.name}}</span>
             <div class="bottom">

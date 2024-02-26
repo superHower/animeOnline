@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { getDetailAnimeService, editAnimeService, addAnimeService } from '@/api/anime.js'
+import {Plus} from "@element-plus/icons-vue";
 
 // 控制抽屉显示隐藏
 const visibleDrawer = ref(false)
@@ -15,8 +16,8 @@ const defaultForm = {
 }
 // 准备数据
 const formModel = ref({ ...defaultForm })
-
-
+// const imgUrl = ref(userStore.user.user_pic)
+const imgUrl = ref()
 // 提交
 const onPublish = async () => {
 
@@ -33,7 +34,15 @@ const onPublish = async () => {
     visibleDrawer.value = false
   }
 }
-
+// 上传
+const onSelectFile = (uploadFile) => {
+  // 基于 FileReader 读取图片做预览
+  const reader = new FileReader()
+  reader.readAsDataURL(uploadFile.raw)
+  reader.onload = () => {
+    imgUrl.value = reader.result
+  }
+}
 
 const open = async (id) => {
   visibleDrawer.value = true // 显示抽屉
@@ -65,7 +74,6 @@ defineExpose({
       direction="rtl"
       size="30%"
   >
-
     <el-form :model="formModel" ref="formRef" label-width="100px">
       <el-form-item label="名称" prop="title">
         <el-input v-model="formModel.name" placeholder="请输入动漫名称"></el-input>
@@ -79,6 +87,22 @@ defineExpose({
       <el-form-item label="简介" prop="name">
         <el-input v-model="formModel.info" type="textarea"></el-input>
       </el-form-item>
+<!--      上传-->
+      <el-upload
+          ref="uploadRef"
+          :auto-upload="false"
+          class="avatar-uploader"
+          :show-file-list="false"
+          :on-change="onSelectFile"
+      >
+        <img v-if="imgUrl" :src="imgUrl" class="avatar" />
+        <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+      </el-upload>
+      <br />
+      <el-button
+          @click="uploadRef.$el.querySelector('input').click()" type="primary" :icon="Plus" size="large"
+      >选择图片</el-button>
+      <el-button @click="onUpdateAvatar" type="success" :icon="Upload" size="large">上传头像</el-button>
       <el-form-item>
         <el-button @click="onPublish()" type="primary">确认</el-button>
       </el-form-item>
@@ -90,8 +114,8 @@ defineExpose({
 .avatar-uploader {
   :deep(1) {
     .avatar {
-      width: 178px;
-      height: 178px;
+      width: 278px;
+      height: 278px;
       display: block;
     }
     .el-upload {
@@ -108,8 +132,8 @@ defineExpose({
     .el-icon.avatar-uploader-icon {
       font-size: 28px;
       color: #8c939d;
-      width: 178px;
-      height: 178px;
+      width: 278px;
+      height: 278px;
       text-align: center;
     }
   }

@@ -10,6 +10,11 @@ import {getDetailAnimeService, getLatestComments,sendCommentService,
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import { useUserStore } from '@/stores'
+import vue3videoPlay from 'vue3-video-play'
+import 'vue3-video-play/dist/style.css'
+import 'video.js/dist/video-js.css'
+
+
 
 const userStore = useUserStore()
 const centerDialogVisible = ref(false)
@@ -111,6 +116,20 @@ const confirmDialog = async () =>{
       <el-container>
         <el-aside>
           {{episodeInfo}}········· 即将播放
+          <template>
+            <div id="player">
+              <template>
+                <vue3videoPlay
+                    width="100%"
+                    title=""
+                    :src="src"
+                    :type="type"
+                    @ended="onEnd"
+                    :autoPlay="false"/>
+
+              </template>
+            </div>
+          </template>
           <el-footer>
             <el-form :model="barrageForm">
               <el-form-item>
