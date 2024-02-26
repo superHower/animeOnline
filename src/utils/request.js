@@ -32,7 +32,9 @@ instance.interceptors.response.use(
     }
     // TODO 3. 处理业务失败
     // 处理业务失败, 给错误提示，抛出错误
-    ElMessage.error(res.data.message || '服务异常,处理业务失败')
+      console.log("结果")
+      console.log(res)
+    ElMessage.error(res.data.msg)
     return Promise.reject(res.data)
   },
   (err) => {
