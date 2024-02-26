@@ -3,7 +3,7 @@ import { useUserStore } from '@/stores'
 import router from '@/router'
 import {ElMessage} from "element-plus";
 // const baseURL = 'http://www.howeryun.top:8080'
-const baseURL = 'http://localhost:8080'
+const baseURL = 'http://localhost:8088'
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
   baseURL,
