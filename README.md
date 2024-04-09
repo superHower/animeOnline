@@ -1,4 +1,3 @@
-这是一个动漫网站web端的vue项目
 # AnimeOnline
 
 This template should help get you started developing with Vue 3 in Vite.
