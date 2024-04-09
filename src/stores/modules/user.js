@@ -3,11 +3,10 @@ import { ref } from 'vue'
 import {userDetailInfoService} from '@/api/user'
 
 // 用户模块 token setToken removeToken
-export const useUserStore = defineStore(
-  'big-user',
-  () => {
+export const useUserStore = defineStore('big-user', () => {
     const token = ref('')
     const setToken = (newToken) => {
+      console.log('设置token: ',newToken);
       token.value = newToken
     }
     const removeToken = () => {
@@ -21,7 +20,11 @@ export const useUserStore = defineStore(
       console.log(res)
     }
     const setUser = (obj) => {
+      console.log('设置用户信息: ',obj);
       user.value = obj
+    }
+    const removeUser = () => {
+      user.value = {}
     }
 
     return {
@@ -30,7 +33,8 @@ export const useUserStore = defineStore(
       removeToken,
       user,
       getUser,
-      setUser
+      setUser,
+      removeUser
     }
   },
   {

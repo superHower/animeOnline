@@ -1,8 +1,5 @@
 <script setup>
 import {
-  Management,
-  Promotion,
-  UserFilled,
   User,
   Crop,
   HomeFilled,
@@ -14,9 +11,8 @@ import {
 import { useUserStore } from '@/stores'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { jwtDecode } from 'jwt-decode'
+
 import { reactive } from 'vue'
-import {userDetailInfoService} from "@/api/user.js";
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -28,10 +24,8 @@ const info = reactive({
 })
 
 onMounted(() => {
-  const account = jwtDecode(userStore.token).account
-  const pwd = jwtDecode(userStore.token).pwd
-  info.account = account
-  userStore.getUser(account, pwd)
+
+  info.account = userStore.user.account
   info.name = userStore.user.name
   info.gender = userStore.user.gender
 

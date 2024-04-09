@@ -2,8 +2,8 @@ import axios from 'axios'
 import { useUserStore } from '@/stores'
 import router from '@/router'
 import {ElMessage} from "element-plus";
-// const baseURL = 'http://www.howeryun.top:8080'
-const baseURL = 'http://localhost:8088'
+const baseURL = 'http://43.143.243.137:8088'
+// const baseURL = 'http://localhost:8088'
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
   baseURL,
@@ -15,6 +15,10 @@ instance.interceptors.request.use(
   (config) => {
     // TODO 2. 携带token
     const useStore = useUserStore()
+    // 登录注册除外
+    if (config.url === '/user/login' || config.url === '/user/register') {
+      return config
+    }
     if (useStore.token) {
       config.headers.Authorization = useStore.token
     }
@@ -27,28 +31,26 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (res) => {
     // TODO 4. 摘取核心响应数据
-    if (res.data.code === 1) {
-      return res
+    if (res.data.code === 200) {
+      console.log("结果");
+      console.log(res);
+      ElMessage.success(res.data.message);
+      return Promise.resolve(res.data);
+    } else if (res.data.code === 401) {
+      ElMessage.error(res.data.message);
+      router.push('/login');
+      return Promise.reject(res);
     }
-    // TODO 3. 处理业务失败
-    // 处理业务失败, 给错误提示，抛出错误
-      console.log("结果")
-      console.log(res)
-    ElMessage.error(res.data.msg)
-    return Promise.reject(res.data)
+    return Promise.reject(res);
   },
   (err) => {
-    // TODO 5. 处理401错误
-    // 错误的特殊情况 => 401 权限不足 或 token 过期 => 拦截到登录
-    if (err.response?.status === 401) {
-      router.push('/login')
+    if (err.response?.status === 500) {
+      ElMessage.error(err.response.data.message || '服务异常!');
+      return Promise.reject(err);
     }
-
-    // 错误的默认情况 => 只要给提示
-    ElMessage.error(err.response.data.message || '服务异常!')
-    return Promise.reject(err)
+    return Promise.reject(err);
   }
-)
+);
 
 export default instance
 export { baseURL }

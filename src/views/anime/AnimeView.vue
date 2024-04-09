@@ -49,7 +49,7 @@ onMounted(() => {
 const getAnimeList = async () => {
   loading.value = true
   const res = await getAnimeListService()
-  animeList.value = res.data.data
+  animeList.value = res.data
   console.log(animeList.value)
 
   animeList.value.forEach((anime) => {
@@ -67,7 +67,7 @@ const onFavorite = async () => {
   loading.value = true
   console.log("我的喜欢")
   const res = await getFavoriteAnimeService(userStore.user.id)
-  animeList.value = res.data.data
+  animeList.value = res.data
   console.log(animeList.value)
 
   loading.value = false
@@ -75,7 +75,7 @@ const onFavorite = async () => {
 const onCollection = async  () => {
   loading.value = true
   const res = await getCollectionAnimeService(userStore.user.id)
-  animeList.value = res.data.data
+  animeList.value = res.data
   console.log(animeList.value)
   loading.value = false
 }
@@ -93,8 +93,8 @@ const onSearchByName = async () => {
   const input = formSearch.value.name
   console.log(input)
   const res = await searchAnimeNameService(input)
-  console.log(res.data.data)
-  animeList.value = res.data.data
+  console.log(res.data)
+  animeList.value = res.data
   console.log(animeList.value)
 }
 
@@ -102,7 +102,7 @@ const onSearchByCondition = async () => {
   params.value.nation = checkboxGroup1.value;
   params.value.time = checkboxGroup2.value;
   const res = await searchAnimeConditionService(params.value.nation, params.value.time)
-  animeList.value = res.data.data
+  animeList.value = res.data
   console.log(animeList.value)
 }
 
@@ -149,10 +149,10 @@ const onSearchByCondition = async () => {
     </el-form>
 <!--    轮播图  -->
     <el-carousel :interval="4000" type="card" height="300px" style="margin: 5px">
-      <el-carousel-item ><img src="@/assets/image/将军.jpg" class="image" alt=""/></el-carousel-item>
-      <el-carousel-item ><img src="@/assets/image/绫华.png" class="image" alt=""/></el-carousel-item>
-      <el-carousel-item ><img src="@/assets/image/夜兰.png" class="image" alt=""/></el-carousel-item>
-      <el-carousel-item ><img src="@/assets/image/妮露.png" class="image" alt=""/></el-carousel-item>
+      <el-carousel-item ><img src="@/assets/image/粉色2.jpg" class="image" alt=""/></el-carousel-item>
+      <el-carousel-item ><img src="@/assets/image/橙色3.jpg" class="image" alt=""/></el-carousel-item>
+      <el-carousel-item ><img src="@/assets/image/Ameng.png" class="image" alt=""/></el-carousel-item>
+      <el-carousel-item ><img src="@/assets/image/cat.png" class="image" alt=""/></el-carousel-item>
     </el-carousel>
 <!-- 动漫卡片 -->
     <el-row>

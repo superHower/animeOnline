@@ -46,7 +46,7 @@ const getEpisodeList = async () => {
   loading.value = true
 
   const res = await getAnimeEpisodesService(AnimeId.value)
-  episodeList.value = res.data.data
+  episodeList.value = res.data
   console.log(episodeList.value)
 
   loading.value = false
@@ -55,7 +55,7 @@ const getAnimeInfo = async () => {
   loading.value = true
 
   const res1 = await getDetailAnimeService(AnimeId.value)
-  animeInfo.value = res1.data.data
+  animeInfo.value = res1.data
   console.log(animeInfo.value)
 
   loading.value = false
@@ -64,7 +64,7 @@ const getCommentList = async () => {
   loading.value = true
 
   const res = await getLatestComments(AnimeId.value)
-  commentList.value = res.data.data
+  commentList.value = res.data
   console.log(commentList.value)
 
   loading.value = false
@@ -197,7 +197,7 @@ const confirmDialog = async () =>{
                           <div class="cell-item"><el-icon><List /></el-icon>评论</div>
                         </template>
                         <div style="font-size: 18px;border: #22d5ce solid 2px; padding: 5px">
-                          <strong>{{ c.comment }}</strong>
+                          <strong>{{ c.content }}</strong>
                         </div>
                       </el-descriptions-item>
                     </el-descriptions>

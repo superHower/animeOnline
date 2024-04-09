@@ -16,7 +16,7 @@ const formModel = ref({
   repassword: '',
   gender: '',
   age: '',
-  number: ''
+
 })
 
 // rules: 整个表单的校验规则
@@ -85,22 +85,7 @@ const rules = {
       trigger: 'blur'
     }
   ],
-  number: [
-    { required: true, message: '请输入账号', trigger: 'blur' },
-    {
-      pattern: /^\S{5}$/,
-      message: '账号必须是 5位 的数字',
-      trigger: 'blur'
-    },
-    {
-      validator: (rule, value, callback) => {
-        const parsedValue = parseInt(value, 10)
-        if (isNaN(parsedValue)) callback(new Error('学号必须为纯数字'))
-        else callback()
-      },
-      trigger: 'blur'
-    }
-  ]
+
 
 }
 
@@ -117,10 +102,15 @@ const userStore = useUserStore()
 const router = useRouter()
 const login = async () => {
   await form.value.validate() // 表单预校验
-  const res = await userLoginService(formModel.value)
+  const res = await userLoginService({
+    account: formModel.value.account,
+    pwd: formModel.value.pwd
+  });
   console.log(res)
-  userStore.setToken(res.data.data)
-  ElMessage.success('登录成功')
+  userStore.removeToken
+  userStore.setToken(res.token)
+  userStore.removeUser
+  userStore.setUser(res.data)
   router.push('/')
 }
 
@@ -133,7 +123,7 @@ watch(isRegister, () => {
     repassword: '',
     gender: '',
     age: '',
-    number: '',
+    account:''
 
   }
 })
@@ -149,7 +139,7 @@ watch(isRegister, () => {
         <h3><strong>欢迎注册</strong></h3>
         <el-row>
           <el-col :span="13">
-            <el-form-item prop="username"><el-input v-model="formModel.name" :prefix-icon="User" placeholder="请输入昵称"></el-input>
+            <el-form-item prop="name"><el-input v-model="formModel.name" :prefix-icon="User" placeholder="请输入昵称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10" :offset="1">
@@ -166,9 +156,9 @@ watch(isRegister, () => {
             <el-form-item prop="age"><el-input v-model="formModel.age" :prefix-icon="User" placeholder="请输入年龄"></el-input></el-form-item>
           </el-col>
         </el-row>
-        <el-form-item prop="password"><el-input v-model="formModel.pwd" :prefix-icon="Lock" type="password" placeholder="请输入密码"></el-input></el-form-item>
+        <el-form-item prop="pwd"><el-input v-model="formModel.pwd" :prefix-icon="Lock" type="password" placeholder="请输入密码"></el-input></el-form-item>
         <el-form-item prop="repassword"><el-input v-model="formModel.repassword" :prefix-icon="Lock" type="password" placeholder="请输入再次密码"></el-input></el-form-item>
-          <el-form-item prop="number"><el-input v-model="formModel.number" :prefix-icon="User" placeholder="请输入学号"></el-input></el-form-item>
+          <el-form-item prop="account"><el-input v-model="formModel.account" :prefix-icon="User" placeholder="请输入学号"></el-input></el-form-item>
 
           <el-form-item>
             <el-button @click="register" class="button" type="primary" auto-insert-space>注册</el-button>
