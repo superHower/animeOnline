@@ -12,9 +12,8 @@ defineProps({
     <template #header>
       <div class="header">
         <h2>{{ title }}</h2>
-        <div class="extra">
-          <slot name="extra"></slot>
-        </div>
+        <div class="prefix"><slot name="prefix"></slot> </div>
+        <div class="extra"><slot name="extra"></slot> </div>
       </div>
     </template>
     <slot></slot>

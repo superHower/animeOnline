@@ -2,8 +2,8 @@ import axios from 'axios'
 import { useUserStore } from '@/stores'
 import router from '@/router'
 import {ElMessage} from "element-plus";
-const baseURL = 'http://43.143.243.137:8088'
-// const baseURL = 'http://localhost:8088'
+const baseURL = import.meta.env.MODE === 'development' ? 'http://43.143.243.137:8088' : 'http://43.143.243.137:8088'
+
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
   baseURL,

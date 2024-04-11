@@ -131,8 +131,8 @@ watch(isRegister, () => {
 
 <template>
   <el-row class="login-page">
-    <el-col :span="12" class="bg"></el-col>
-    <el-col :span="8" :offset="2" class="form">
+    <el-col :span="8" :offset="3" class="bg"></el-col>
+    <el-col :span="8" :offset="1" class="form">
       <!-- 注册相关表单 -->
 
       <el-form :model="formModel" :rules="rules" ref="form" size="large" autocomplete="off" v-if="isRegister">
@@ -178,17 +178,26 @@ watch(isRegister, () => {
         <el-form-item class="flex"><el-link type="info" :underline="false" @click="isRegister = true"> 注册 → </el-link></el-form-item>
       </el-form>
     </el-col>
+    <div class="beian">
+      <span>wwww.hower.fun | @ Developed by Hower | 网站备案号</span>
+      <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">豫ICP备2023030938号</a>
+    </div>
   </el-row>
+
 </template>
 
 <style lang="scss" scoped>
 .login-page {
+  display: flex;
   height: 100vh; // 100vh 表示占据视口的100%
   background-color: #fff;
   .bg {
-    width: 1300px;
-    height: 100%;
-    background: url('@/assets/image/粉色2.jpg') no-repeat center / cover;
+    position: relative;
+    top: 1%;
+  
+    height: 98%;
+  
+    background: url('@/assets/image/粉色2.jpg') no-repeat center / 100% 100%;
     border-radius: 0 20px 20px 0;
   }
   .form {
@@ -211,6 +220,23 @@ watch(isRegister, () => {
       width: 100%;
       display: flex;
       justify-content: space-between;
+    }
+  }
+  .beian {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    color: #666;
+    font-size: 13px;
+    text-align: center;
+    padding: 10px;
+    background-color: rgba(245, 245, 245, 0.3);
+    a {
+      text-decoration: none;
+      color: #666;
+      margin: 0 10px;
     }
   }
 }

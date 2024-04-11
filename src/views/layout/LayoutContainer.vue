@@ -11,7 +11,6 @@ import {
 import { useUserStore } from '@/stores'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-
 import { reactive } from 'vue'
 
 const userStore = useUserStore()
@@ -62,7 +61,7 @@ const goIndex = () => {
           <el-menu-item index="6"><el-icon><HomeFilled /></el-icon>关于</el-menu-item>
         </el-menu>
 
-        <el-form>
+        <el-form >
           <el-input type="input" placeholder="搜索"></el-input>
         </el-form>
 
@@ -90,11 +89,14 @@ const goIndex = () => {
 
       </el-header>
 
-      <el-main>
+      <el-main style="padding: 5px;">
         <router-view></router-view>
       </el-main>
 
-      <el-footer> 动漫网站 ©2023 Created by Hower </el-footer>
+      <el-footer> 动漫网站 ©2023-12-20 Developed by Hower |
+        <span> 网站备案号：</span>
+          <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">豫ICP备2023030938号</a>
+      </el-footer>
     </el-container>
   </el-container>
 </template>
@@ -105,10 +107,12 @@ const goIndex = () => {
   height: 100vh;
   .el-header {
     width: 100%;
-    margin-top: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .el-menu-demo {
+       height: 40px;
+    }
 
     .el-dropdown__box {
       display: flex;
@@ -128,9 +132,14 @@ const goIndex = () => {
   .el-footer {
     display: flex;
     align-items: center;
+    height: 2%;
     justify-content: center;
-    font-size: 14px;
+    font-size: 12px;
     color: #666;
+    a {
+      color: #666;
+      text-decoration: none;
+    }
   }
 }
 </style>

@@ -12,15 +12,21 @@ const defaultForm = {
   name:'',
   info:'',
   time:'',
-  nation:''
+  nation:'',
+  imgUrl:''
 }
 // 准备数据
 const formModel = ref({ ...defaultForm })
-// const imgUrl = ref(userStore.user.user_pic)
-const imgUrl = ref()
+
 // 提交
 const onPublish = async () => {
-
+  console.log(formModel.value.time)
+  if (formModel.value.time instanceof Date) {
+    formModel.value.time = formModel.value.time.toISOString().substring(0, 10);
+  }
+  formModel.value.time = formModel.value.time.substring(0, 10);
+ 
+    
   console.log("表单中的内容是")
   console.log(formModel.value)
   if (!isAdd.value) {    // 编辑操作
@@ -40,19 +46,22 @@ const onSelectFile = (uploadFile) => {
   const reader = new FileReader()
   reader.readAsDataURL(uploadFile.raw)
   reader.onload = () => {
-    imgUrl.value = reader.result
+    console.log(reader.result)
+    formModel.value.imgUrl = reader.result
   }
 }
 
 const open = async (id) => {
   visibleDrawer.value = true // 显示抽屉
-  console.log(id)
+  console.log('id', id)
 
   if (id) { // 编辑 - 数据回显 (基于 row.id 发送请求)
     isAdd.value = false
     const res = await getDetailAnimeService(id)
-    console.log(res)
-    formModel.value = res.data.data
+    console.log(res.data)
+
+    formModel.value = { ...res.data } 
+    console.log(formModel.value.imgUrl)
   } else {
     // 添加 - 数据重置
     isAdd.value = true
@@ -70,24 +79,25 @@ defineExpose({
 <template>
   <el-drawer
       v-model="visibleDrawer"
-      :title="formModel.name ? '修改动漫' : '添加动漫'"
+      :title="isAdd ? '增加动漫' : '修改动漫'"
       direction="rtl"
       size="30%"
   >
     <el-form :model="formModel" ref="formRef" label-width="100px">
-      <el-form-item label="名称" prop="title">
+      <el-form-item label="名称" prop="name">
         <el-input v-model="formModel.name" placeholder="请输入动漫名称"></el-input>
       </el-form-item>
-      <el-form-item label="地区" prop="name">
+      <el-form-item label="地区" prop="nation">
         <el-input v-model="formModel.nation"></el-input>
       </el-form-item>
-      <el-form-item label="上映时间" prop="name">
+      <el-form-item label="上映时间" prop="time">
         <el-date-picker v-model="formModel.time" type="date" placeholder="选择日期" style="width: 100%"/>
       </el-form-item>
-      <el-form-item label="简介" prop="name">
+      <el-form-item label="简介" prop="info">
         <el-input v-model="formModel.info" type="textarea"></el-input>
       </el-form-item>
 <!--      上传-->
+      <span style="padding: 10px"></span>选择封面
       <el-upload
           ref="uploadRef"
           :auto-upload="false"
@@ -95,14 +105,10 @@ defineExpose({
           :show-file-list="false"
           :on-change="onSelectFile"
       >
-        <img v-if="imgUrl" :src="imgUrl" class="avatar" />
+        <img v-if="formModel.imgUrl" :src="formModel.imgUrl" class="avatar" />
         <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
       </el-upload>
       <br />
-      <el-button
-          @click="uploadRef.$el.querySelector('input').click()" type="primary" :icon="Plus" size="large"
-      >选择图片</el-button>
-      <el-button @click="onUpdateAvatar" type="success" :icon="Upload" size="large">上传头像</el-button>
       <el-form-item>
         <el-button @click="onPublish()" type="primary">确认</el-button>
       </el-form-item>
@@ -112,32 +118,30 @@ defineExpose({
 
 <style lang="scss" scoped>
 .avatar-uploader {
-  :deep(1) {
-    .avatar {
-      width: 278px;
-      height: 278px;
-      display: block;
-    }
-    .el-upload {
-      border: 1px dashed var(--el-border-color);
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: var(--el-transition-duration-fast);
-    }
-    .el-upload:hover {
-      border-color: var(--el-color-primary);
-    }
-    .el-icon.avatar-uploader-icon {
-      font-size: 28px;
-      color: #8c939d;
-      width: 278px;
-      height: 278px;
-      text-align: center;
-    }
-  }
+  width: 220px; /* 设置宽度，可以根据需要进行调整 */
+  height: 220px; /* 设置高度，可以根据需要进行调整 */
+  margin-left: 100px;
+
+  border: 1px dashed #ccc; /* 设置边框样式，可以根据需要进行调整 */
+  border-radius: 4px; /* 设置边框圆角，可以根据需要进行调整 */
+  text-align: center; /* 设置内容居中，可以根据需要进行调整 */
+  display: flex; /* 设置为弹性布局，可以根据需要进行调整 */
+  align-items: center; /* 设置垂直居中，可以根据需要进行调整 */
+  justify-content: center; /* 设置水平居中，可以根据需要进行调整 */
 }
+
+.avatar-uploader-icon {
+  font-size: 28px; /* 设置图标的大小，可以根据需要进行调整 */
+  color: #999; /* 设置图标的颜色，可以根据需要进行调整 */
+}
+
+.avatar {
+  width: 100%; /* 图片宽度填充父容器 */
+  height: 100%; /* 图片高度填充父容器 */
+  object-fit: cover; /* 设置图片适应方式，可以根据需要进行调整 */
+  border-radius: 4px; /* 设置图片圆角，可以根据需要进行调整 */
+}
+
 
 .editor {
   width: 100%;
