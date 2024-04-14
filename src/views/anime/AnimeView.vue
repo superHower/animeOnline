@@ -12,6 +12,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores'
 import AnimeDrawer from '@/components/AnimeDrawer.vue'
+import ImageUpload from '@/components/ImageUpload.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -94,6 +95,11 @@ const onSearchByCondition = async () => {
   const res = await searchAnimeConditionService(params.value.nation, params.value.time)
   animeList.value = res.data
   console.log(animeList.value)
+}
+
+const getImageUrl = (result) => {
+  console.log(result)
+  // formModel.value.imgUrl = result
 }
 </script>
 

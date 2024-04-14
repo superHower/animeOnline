@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useUserStore } from '@/stores'
 import router from '@/router'
 import {ElMessage} from "element-plus";
-const baseURL = import.meta.env.MODE === 'development' ? 'http://43.143.243.137:8088' : 'http://43.143.243.137:8088'
+const baseURL = import.meta.env.MODE === 'development' ? 'http://localhost:8088' : 'http://43.143.243.137:8088'
 
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
@@ -16,7 +16,7 @@ instance.interceptors.request.use(
     // TODO 2. 携带token
     const useStore = useUserStore()
     // 登录注册除外
-    if (config.url === '/user/login' || config.url === '/user/register') {
+    if (config.url === '/user/login' || config.url === '/user/register'  || config.url === '/upload/single' || config.url === '/upload/multiple'){
       return config
     }
     if (useStore.token) {

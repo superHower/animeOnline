@@ -1,8 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { getDetailAnimeService, editAnimeService, addAnimeService } from '@/api/anime.js'
-import {Plus} from "@element-plus/icons-vue";
-
+import ImageUpload from '@/components/ImageUpload.vue'
 // 控制抽屉显示隐藏
 const visibleDrawer = ref(false)
 const isAdd = ref(false);
@@ -40,16 +39,12 @@ const onPublish = async () => {
     visibleDrawer.value = false
   }
 }
-// 上传
-const onSelectFile = (uploadFile) => {
-  // 基于 FileReader 读取图片做预览
-  const reader = new FileReader()
-  reader.readAsDataURL(uploadFile.raw)
-  reader.onload = () => {
-    console.log(reader.result)
-    formModel.value.imgUrl = reader.result
-  }
-}
+
+
+const handleUploaded = (url) => {
+  console.log('Uploaded URL:', url);
+  formModel.value.imgUrl = url;
+};
 
 const open = async (id) => {
   visibleDrawer.value = true // 显示抽屉
@@ -98,22 +93,20 @@ defineExpose({
       </el-form-item>
 <!--      上传-->
       <span style="padding: 10px"></span>选择封面
-      <el-upload
-          ref="uploadRef"
-          :auto-upload="false"
-          class="avatar-uploader"
-          :show-file-list="false"
-          :on-change="onSelectFile"
-      >
-        <img v-if="formModel.imgUrl" :src="formModel.imgUrl" class="avatar" />
-        <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-      </el-upload>
-      <br />
+      <div style="margin-left: 100px;">     
+        <ImageUpload :upUrl="formModel.imgUrl" @uploaded="handleUploaded" >
+        </ImageUpload>
+      </div>
+
       <el-form-item>
         <el-button @click="onPublish()" type="primary">确认</el-button>
       </el-form-item>
+     
     </el-form>
   </el-drawer>
+
+
+
 </template>
 
 <style lang="scss" scoped>
