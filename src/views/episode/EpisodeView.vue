@@ -1,10 +1,6 @@
 <script setup>
 
-import {
-  List, User, Stopwatch, ArrowRight, VideoPlay,
-  VideoPause, ArrowLeft,
-  Opportunity, StarFilled
-} from '@element-plus/icons-vue'
+import { List, User, Stopwatch, Opportunity, StarFilled } from '@element-plus/icons-vue'
 import PageContainer from '@/components/PageContainer.vue'
 import { getAnimeEpisodesService, sendBarrageService } from '@/api/episode.js'
 import {
@@ -14,7 +10,11 @@ import {
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import { useUserStore } from '@/stores'
+import { ElMessage } from 'element-plus'
 
+import VideoPlayer from '@/components/VideoPlayer.vue'
+
+const videoSrc = ref('https://web-framework111111.oss-cn-beijing.aliyuncs.com/video/391171327_da2-1-16.mp4')
 
 const userStore = useUserStore()
 const centerDialogVisible = ref(false)
@@ -26,6 +26,9 @@ const commentList = ref([])
 const episodeInfo = ref({})
 const ranking = ref(null)
 const loading = ref(false)
+
+
+
 const commentForm = ref({
   comment: '',
   uid: '',
@@ -36,6 +39,8 @@ const barrageForm = ref({
   uid: '',
   eid: ''
 })
+
+
 onMounted(() => {
   const url = new URL(window.location.href);
   AnimeId.value = url.searchParams.get('id');
@@ -111,43 +116,29 @@ const confirmDialog = async () => {
 
 <template>
   <page-container title="动漫剧集">
-
     <div class="common-layout">
   
         <div class="episode-main-left">
-          {{ episodeInfo }}········· 即将播放
-          <template>
-            <div id="player">
-              <template>
-              </template>
+          <div class="display-video">
+              <VideoPlayer :src="videoSrc" :second="3" :width="800" :height="450" />
+          </div>
+      
+          <div class="display-footer">
+            <div>
+              <el-form :model="barrageForm">
+                <el-form-item>
+                  <el-col :span="18">
+                    <el-input placeholder="请输入你的弹幕吧" v-model="barrageForm.barrage"></el-input>
+                  </el-col>
+                  <el-col :span="4" :offset="2">
+                    <el-button type="primary" round @click="onSendBarrage"><strong>发弹幕</strong></el-button>
+                  </el-col>
+                </el-form-item>
+              </el-form>
             </div>
-          </template>
-          <el-footer>
-            <el-form :model="barrageForm">
-              <el-form-item>
-                <el-col :span="18">
-                  <el-input placeholder="请输入你的弹幕吧" v-model="barrageForm.barrage"></el-input>
-                </el-col>
-                <el-col :span="4" :offset="2">
-                  <el-button type="primary" round @click="onSendBarrage"><strong>发弹幕</strong></el-button>
-                </el-col>
-              </el-form-item>
-            </el-form>
-
-            <el-icon>
-              <ArrowLeft />
-            </el-icon>
-            <el-icon>
-              <VideoPause />
-            </el-icon>
-            <el-icon>
-              <VideoPlay />
-            </el-icon>
-            <el-icon>
-              <ArrowRight />
-            </el-icon>
             <el-button type="warning" round>查看弹幕</el-button>
-          </el-footer>
+          </div>
+
         </div>
         <div class="episode-main-right">
           <div class="episode-info-top"><strong>{{ animeInfo.name }}</strong></div>
@@ -184,6 +175,7 @@ const confirmDialog = async () => {
                   <el-table-column prop="name" label="名字" width="180" />
                   <el-table-column prop="duration" label="时长" width="180" />
                   <el-table-column prop="barrages" label="弹幕数" />
+               
                 </el-table>
               </el-tab-pane>
               <el-tab-pane label="最新评论">
@@ -278,13 +270,22 @@ const confirmDialog = async () => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    .display-video {
+      height: 94%;
+      min-width: 800px;
+      border: #b88230 solid 1px;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-    .el-footer {
+    .display-footer {
+      height: 6%;
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: space-evenly;
       padding-top: 10px;
-      //border: yellowgreen 3px solid;
       background-color: #1D1D1D;
     }
   }

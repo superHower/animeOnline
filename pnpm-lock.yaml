@@ -17,6 +17,9 @@ dependencies:
   element-plus:
     specifier: ^2.4.4
     version: registry.npmmirror.com/element-plus@2.4.4(vue@3.3.13)
+  flv.js:
+    specifier: ^1.6.2
+    version: 1.6.2
   jwt-decode:
     specifier: ^4.0.0
     version: registry.npmmirror.com/jwt-decode@4.0.0
@@ -26,6 +29,9 @@ dependencies:
   pinia-plugin-persistedstate:
     specifier: ^3.2.1
     version: registry.npmmirror.com/pinia-plugin-persistedstate@3.2.1(pinia@2.1.7)
+  video.js:
+    specifier: ^7.21.5
+    version: 7.21.5
   vue:
     specifier: ^3.3.11
     version: registry.npmmirror.com/vue@3.3.13
@@ -34,10 +40,7 @@ dependencies:
     version: registry.npmmirror.com/vue-router@4.2.5(vue@3.3.13)
   vue-video-player:
     specifier: ^6.0.0
-    version: registry.npmmirror.com/vue-video-player@6.0.0(@types/video.js@7.3.56)(video.js@7.21.5)(vue@3.3.13)
-  vue3-video-player:
-    specifier: ^1.0.0
-    version: registry.npmmirror.com/vue3-video-player@1.0.0
+    version: 6.0.0(@types/video.js@7.3.58)(video.js@7.21.5)(vue@3.3.13)
 
 devDependencies:
   '@rushstack/eslint-patch':
@@ -76,8 +79,8 @@ devDependencies:
 
 packages:
 
-  /@babel/runtime@7.23.8:
-    resolution: {integrity: sha512-Y7KbAP984rn1VGMbGqKmBLio9V7y5Je9GvU4rQPCPinCyNfUcToxIXl06d59URp/F3LwinvODxab5N/G6qggkw==}
+  /@babel/runtime@7.24.4:
+    resolution: {integrity: sha512-dkxf7+hn8mFBwKjs9bvBlArzLVxVbS8usaPUDd5p2a9JCL9tB8OaOVN1isD4+Xyk4ns89/xeOmbQvgdK7IIVdA==}
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.1
@@ -403,8 +406,20 @@ packages:
     resolution: {integrity: sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==}
     dev: false
 
-  /@types/video.js@7.3.56:
-    resolution: {integrity: sha512-T3cp/kDuNj8scIzK87u0uomUDKnYQE1uHAA0zFPNGc0qCF3aLxZmMtpWvGxofEPNOpUfvtbsQMvwbjU42q8omw==}
+  /@types/video.js@7.3.58:
+    resolution: {integrity: sha512-1CQjuSrgbv1/dhmcfQ83eVyYbvGyqhTvb2Opxr0QCV+iJ4J6/J+XWQ3Om59WiwCd1MN3rDUHasx5XRrpUtewYQ==}
+    dev: false
+
+  /@videojs-player/vue@1.0.0(@types/video.js@7.3.58)(video.js@7.21.5)(vue@3.3.13):
+    resolution: {integrity: sha512-WonTezRfKu3fYdQLt/ta+nuKH6gMZUv8l40Jke/j4Lae7IqeO/+lLAmBnh3ni88bwR+vkFXIlZ2Ci7VKInIYJg==}
+    peerDependencies:
+      '@types/video.js': 7.x
+      video.js: 7.x
+      vue: 3.x
+    dependencies:
+      '@types/video.js': 7.3.58
+      video.js: 7.21.5
+      vue: registry.npmmirror.com/vue@3.3.13
     dev: false
 
   /@videojs/http-streaming@2.16.2(video.js@7.21.5):
@@ -413,7 +428,7 @@ packages:
     peerDependencies:
       video.js: ^6 || ^7
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
       '@videojs/vhs-utils': 3.0.5
       aes-decrypter: 3.1.3
       global: 4.4.0
@@ -427,7 +442,7 @@ packages:
     resolution: {integrity: sha512-PKVgdo8/GReqdx512F+ombhS+Bzogiofy1LgAj4tN8PfdBx3HSS7V5WfJotKTqtOWGwVfSWsrYN/t09/DSryrw==}
     engines: {node: '>=8', npm: '>=5'}
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
       global: 4.4.0
       url-toolkit: 2.2.5
     dev: false
@@ -435,7 +450,7 @@ packages:
   /@videojs/xhr@2.6.0:
     resolution: {integrity: sha512-7J361GiN1tXpm+gd0xz2QWr3xNWBE+rytvo8J3KuggFaLg+U37gZQ2BuPLcnkfGffy2e+ozY70RHC8jt7zjA6Q==}
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
       global: 4.4.0
       is-function: 1.0.2
     dev: false
@@ -448,7 +463,7 @@ packages:
   /aes-decrypter@3.1.3:
     resolution: {integrity: sha512-VkG9g4BbhMBy+N5/XodDeV6F02chEk9IpgRTq/0bS80y4dzy79VH2Gtms02VXomf3HmyRe3yyJYkJ990ns+d6A==}
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
       '@videojs/vhs-utils': 3.0.5
       global: 4.4.0
       pkcs7: 1.0.4
@@ -462,6 +477,17 @@ packages:
 
   /dom-walk@0.1.2:
     resolution: {integrity: sha512-6QvTW9mrGeIegrFXdtQi9pk7O/nSK6lSdXW2eqUspN5LWD7UTji2Fqw5V2YLjBpHEoU9Xl/eUWNpDeZvoyOv2w==}
+    dev: false
+
+  /es6-promise@4.2.8:
+    resolution: {integrity: sha512-HJDGx5daxeIvxdBxvG2cb9g4tEvwIk3i8+nhX0yGrYmZUzbkdg8QbDevheDB8gd0//uPj4c1EQua8Q+MViT0/w==}
+    dev: false
+
+  /flv.js@1.6.2:
+    resolution: {integrity: sha512-xre4gUbX1MPtgQRKj2pxJENp/RnaHaxYvy3YToVVCrSmAWUu85b9mug6pTXF6zakUjNP2lFWZ1rkSX7gxhB/2A==}
+    dependencies:
+      es6-promise: 4.2.8
+      webworkify-webpack: 2.1.5
     dev: false
 
   /fsevents@2.3.3:
@@ -487,14 +513,14 @@ packages:
     resolution: {integrity: sha512-lw7DUp0aWXYg+CBCN+JKkcE0Q2RayZnSvnZBlwgxHBQhqt5pZNVy4Ri7H9GmmXkdu7LUthszM+Tor1u/2iBcpQ==}
     dev: false
 
-  /keycode@2.2.1:
-    resolution: {integrity: sha512-Rdgz9Hl9Iv4QKi8b0OlCRQEzp4AgVxyCtz5S/+VIHezDmrDhkp2N2TqBWOLz0/gbeREXOOiI9/4b8BY9uw2vFg==}
+  /keycode@2.2.0:
+    resolution: {integrity: sha512-ps3I9jAdNtRpJrbBvQjpzyFbss/skHqzS+eu4RxKLaEAtFqkjZaB6TZMSivPbLxf4K7VI4SjR0P5mRCX5+Q25A==}
     dev: false
 
   /m3u8-parser@4.8.0:
     resolution: {integrity: sha512-UqA2a/Pw3liR6Df3gwxrqghCP17OpPlQj6RBPLYygf/ZSQ4MoSgvdvhvt35qV+3NaaA0FSZx93Ix+2brT1U7cA==}
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
       '@videojs/vhs-utils': 3.0.5
       global: 4.4.0
     dev: false
@@ -509,7 +535,7 @@ packages:
     resolution: {integrity: sha512-fwBebvpyPUU8bOzvhX0VQZgSohncbgYwUyJJoTSNpmy7ccD2ryiCvM7oRkn/xQH5cv73/xU7rJSNCLjdGFor0Q==}
     hasBin: true
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
       '@videojs/vhs-utils': 3.0.5
       '@xmldom/xmldom': 0.8.10
       global: 4.4.0
@@ -520,7 +546,7 @@ packages:
     engines: {node: '>=8', npm: '>=5'}
     hasBin: true
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
       global: 4.4.0
     dev: false
 
@@ -528,7 +554,7 @@ packages:
     resolution: {integrity: sha512-afRERtHn54AlwaF2/+LFszyAANTCggGilmcmILUzEjvs3XgFZT+xE6+QWQcAGmu4xajy+Xtj7acLOPdx5/eXWQ==}
     hasBin: true
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
     dev: false
 
   /process@0.11.10:
@@ -559,13 +585,13 @@ packages:
   /video.js@7.21.5:
     resolution: {integrity: sha512-WRq86tXZKrThA9mK+IR+v4tIQVVvnb5LhvL71fD2AX7TxVOPdaeK1X/wyuUruBqWaOG3w2sZXoMY6HF2Jlo9qA==}
     dependencies:
-      '@babel/runtime': 7.23.8
+      '@babel/runtime': 7.24.4
       '@videojs/http-streaming': 2.16.2(video.js@7.21.5)
       '@videojs/vhs-utils': 3.0.5
       '@videojs/xhr': 2.6.0
       aes-decrypter: 3.1.3
       global: 4.4.0
-      keycode: 2.2.1
+      keycode: 2.2.0
       m3u8-parser: 4.8.0
       mpd-parser: 0.22.1
       mux.js: 6.0.1
@@ -582,6 +608,23 @@ packages:
     resolution: {integrity: sha512-yZbBxvA7QMYn15Lr/ZfhhLPrNpI/RmCSCqgIff57GC2gIrV5YfyzLfLyZMj0NnZSAz8syB4N0nHXpZg9MyrMOQ==}
     dependencies:
       global: 4.4.0
+    dev: false
+
+  /vue-video-player@6.0.0(@types/video.js@7.3.58)(video.js@7.21.5)(vue@3.3.13):
+    resolution: {integrity: sha512-WP47OtefsjMEReRCIKIL3tRRgH/PyNm8ELjsbYgr/WWrYAj5Ih9Adzkzp+ylYOI/v57jJ4O7O4XkbXBCmsTqNw==}
+    peerDependencies:
+      '@types/video.js': 7.x
+      video.js: 7.x
+      vue: 3.x
+    dependencies:
+      '@types/video.js': 7.3.58
+      '@videojs-player/vue': 1.0.0(@types/video.js@7.3.58)(video.js@7.21.5)(vue@3.3.13)
+      video.js: 7.21.5
+      vue: registry.npmmirror.com/vue@3.3.13
+    dev: false
+
+  /webworkify-webpack@2.1.5:
+    resolution: {integrity: sha512-2akF8FIyUvbiBBdD+RoHpoTbHMQF2HwjcxfDvgztAX5YwbZNyrtfUMgvfgFVsgDhDPVTlkbb5vyasqDHfIDPQw==}
     dev: false
 
   registry.npmmirror.com/@aashutoshrathi/word-wrap@1.2.6:
@@ -855,21 +898,6 @@ packages:
     name: '@ungap/structured-clone'
     version: 1.2.0
     dev: true
-
-  registry.npmmirror.com/@videojs-player/vue@1.0.0(@types/video.js@7.3.56)(video.js@7.21.5)(vue@3.3.13):
-    resolution: {integrity: sha512-WonTezRfKu3fYdQLt/ta+nuKH6gMZUv8l40Jke/j4Lae7IqeO/+lLAmBnh3ni88bwR+vkFXIlZ2Ci7VKInIYJg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@videojs-player/vue/-/vue-1.0.0.tgz}
-    id: registry.npmmirror.com/@videojs-player/vue/1.0.0
-    name: '@videojs-player/vue'
-    version: 1.0.0
-    peerDependencies:
-      '@types/video.js': 7.x
-      video.js: 7.x
-      vue: 3.x
-    dependencies:
-      '@types/video.js': 7.3.56
-      video.js: 7.21.5
-      vue: registry.npmmirror.com/vue@3.3.13
-    dev: false
 
   registry.npmmirror.com/@vitejs/plugin-vue@4.5.2(vite@5.0.10)(vue@3.3.13):
     resolution: {integrity: sha512-UGR3DlzLi/SaVBPX0cnSyE37vqxU3O6chn8l0HJNzQzDia6/Au2A4xKv+iIJW8w2daf80G7TYHhi1pAUjdZ0bQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vitejs/plugin-vue/-/plugin-vue-4.5.2.tgz}
@@ -3287,28 +3315,6 @@ packages:
     dependencies:
       '@vue/devtools-api': registry.npmmirror.com/@vue/devtools-api@6.5.1
       vue: registry.npmmirror.com/vue@3.3.13
-    dev: false
-
-  registry.npmmirror.com/vue-video-player@6.0.0(@types/video.js@7.3.56)(video.js@7.21.5)(vue@3.3.13):
-    resolution: {integrity: sha512-WP47OtefsjMEReRCIKIL3tRRgH/PyNm8ELjsbYgr/WWrYAj5Ih9Adzkzp+ylYOI/v57jJ4O7O4XkbXBCmsTqNw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-video-player/-/vue-video-player-6.0.0.tgz}
-    id: registry.npmmirror.com/vue-video-player/6.0.0
-    name: vue-video-player
-    version: 6.0.0
-    peerDependencies:
-      '@types/video.js': 7.x
-      video.js: 7.x
-      vue: 3.x
-    dependencies:
-      '@types/video.js': 7.3.56
-      '@videojs-player/vue': registry.npmmirror.com/@videojs-player/vue@1.0.0(@types/video.js@7.3.56)(video.js@7.21.5)(vue@3.3.13)
-      video.js: 7.21.5
-      vue: registry.npmmirror.com/vue@3.3.13
-    dev: false
-
-  registry.npmmirror.com/vue3-video-player@1.0.0:
-    resolution: {integrity: sha512-YlrOZumztigFaS3+i2lQBbhamW1oJFI0QH72CgE7VxySCoNFd0sLYHqZ6RbXmXIQBalGx5ASYDznRG8yRU/rnA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue3-video-player/-/vue3-video-player-1.0.0.tgz}
-    name: vue3-video-player
-    version: 1.0.0
     dev: false
 
   registry.npmmirror.com/vue@3.3.13:
