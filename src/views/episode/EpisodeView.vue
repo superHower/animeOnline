@@ -2,19 +2,19 @@
 
 import { List, User, Stopwatch, Opportunity, StarFilled } from '@element-plus/icons-vue'
 import PageContainer from '@/components/PageContainer.vue'
-import { getAnimeEpisodesService, sendBarrageService } from '@/api/episode.js'
+import { getAnimeEpisodesService, sendBarrageService, getBarrageService } from '@/api/episode.js'
 import {
   getDetailAnimeService, getLatestComments, sendCommentService,
-  likeService, collectService, rankService
+  likeService, collectService, rankService, getUaInfoService
 } from '@/api/anime.js'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import { useUserStore } from '@/stores'
-import { ElMessage } from 'element-plus'
+import {ElMessage} from "element-plus";
 
 import VideoPlayer from '@/components/VideoPlayer.vue'
 
-const videoSrc = ref('https://web-framework111111.oss-cn-beijing.aliyuncs.com/video/391171327_da2-1-16.mp4')
+const videoSrc = ref('')
 
 const userStore = useUserStore()
 const centerDialogVisible = ref(false)
@@ -23,21 +23,23 @@ const EpisodeId = ref(null);
 const animeInfo = ref({});
 const episodeList = ref([])
 const commentList = ref([])
-const episodeInfo = ref({})
+const barrageList = ref([{}])
+
 const ranking = ref(null)
 const loading = ref(false)
 
 
 
 const commentForm = ref({
-  comment: '',
-  uid: '',
-  aid: ''
+  content: '',
+  uaid: '',
+  time: ''
 })
 const barrageForm = ref({
   barrage: '',
   uid: '',
-  eid: ''
+  eid: '',
+  time: ''
 })
 
 
@@ -82,20 +84,44 @@ const getCommentList = async () => {
 const openEpisode = (row) => {
   console.log(row)
   EpisodeId.value = row.id
-  episodeInfo.value = row.name
+  videoSrc.value = row.videoUrl
 }
 const onSendComment = async () => {
-  commentForm.value.aid = AnimeId.value;
-  commentForm.value.uid = userStore.user.id;
+  const res = await getUaInfoService(userStore.user.id, AnimeId.value)
+  commentForm.value.uaid = res.data[0].id
+  const now = new Date().toLocaleString()
+  const formattedDate = now.replace(/(\d{4})\/(\d{1,2})\/(\d{1,2})/, (match, year, month, day) => {
+    return year + '-' + (month.length === 1 ? '0' + month : month) + '-' + (day.length === 1 ? '0' + day : day);
+  });
+  commentForm.value.time = formattedDate
+  console.log(commentForm.value.time)
   await sendCommentService(commentForm.value)
   ElMessage.success('评论成功')
 }
 const onSendBarrage = async () => {
+  if (EpisodeId.value === null) {
+    ElMessage.warning('请先选择一个剧集')
+    return
+  }
   barrageForm.value.eid = EpisodeId.value;
   barrageForm.value.uid = userStore.user.id;
+  const now = new Date().toLocaleString()
+  const formattedDate = now.replace(/(\d{4})\/(\d{1,2})\/(\d{1,2})/, (match, year, month, day) => {
+    return year + '-' + (month.length === 1 ? '0' + month : month) + '-' + (day.length === 1 ? '0' + day : day);
+  });
+  barrageForm.value.time = formattedDate
   console.log(barrageForm.value)
   await sendBarrageService(barrageForm.value)
   ElMessage.success('已发送弹幕')
+}
+const getBarrageList = async () => {
+  if (EpisodeId.value === null) {
+    ElMessage.warning('请先选择一个剧集')
+    return
+  }
+  const res = await getBarrageService(EpisodeId.value)
+  barrageList.value = res.data
+  ElMessage.success('获取弹幕成功')
 }
 const onLike = async () => {
   await likeService(userStore.user.id, AnimeId.value)
@@ -117,8 +143,8 @@ const confirmDialog = async () => {
 <template>
   <page-container title="动漫剧集">
     <div class="common-layout">
-  
         <div class="episode-main-left">
+          <div class="display-barrage">{{barrageList[0].barrage}}</div>
           <div class="display-video">
               <VideoPlayer :src="videoSrc" :second="3" :width="800" :height="450" />
           </div>
@@ -136,7 +162,7 @@ const confirmDialog = async () => {
                 </el-form-item>
               </el-form>
             </div>
-            <el-button type="warning" round>查看弹幕</el-button>
+            <el-button type="warning" round @click="getBarrageList">查看弹幕</el-button>
           </div>
 
         </div>
@@ -182,7 +208,7 @@ const confirmDialog = async () => {
                 <el-form :model="commentForm">
                   <el-form-item>
                     <el-col :span="18">
-                      <el-input placeholder="请输入你的评论吧" type="textarea" v-model="commentForm.comment"></el-input>
+                      <el-input placeholder="请输入你的评论吧" type="textarea" v-model="commentForm.content"></el-input>
                     </el-col>
                     <el-col :span="4" :offset="2">
                       <el-button type="warning" round @click="onSendComment"><strong>发布评论</strong></el-button>
@@ -270,6 +296,16 @@ const confirmDialog = async () => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    .display-barrage {
+      height: 5%;
+      border: #b88230 solid 1px;
+      color: orangered;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #1D1D1D;
+    }
     .display-video {
       height: 94%;
       min-width: 800px;
