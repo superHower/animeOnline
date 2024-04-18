@@ -177,16 +177,38 @@ watch(isRegister, () => {
         <el-form-item><el-button @click="login" class="button" type="primary" auto-insert-space>登录</el-button></el-form-item>
         <el-form-item class="flex"><el-link type="info" :underline="false" @click="isRegister = true"> 注册 → </el-link></el-form-item>
       </el-form>
+      <div style="height: 200px"></div>
+    </el-col>
+    <el-col :span="3" :offset="1">
+      <div class="author">
+        <div>开发者</div>
+        <a href="https://github.com/superHower" target="_blank" rel="noopener noreferrer">
+          <svg height="50" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="50" data-view-component="true" class="octicon octicon-mark-github v-align-middle color-fg-default">
+            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+          </svg>
+        </a>
+      </div>
+   
     </el-col>
     <div class="beian">
       <span>wwww.hower.fun | @ Developed by Hower | 网站备案号</span>
       <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">豫ICP备2023030938号</a>
     </div>
   </el-row>
+  
+
+  <svg class="bolang" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 250">
+    <path fill="#0099ff" fill-opacity="1" d="M0,160L40,133.3C80,107,160,53,240,42.7C320,32,400,64,480,69.3C560,75,640,53,720,69.3C800,85,880,139,960,149.3C1040,160,1120,128,1200,101.3C1280,75,1360,53,1400,42.7L1440,32L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path>
+  </svg>
 
 </template>
 
 <style lang="scss" scoped>
+.bolang {
+  position: absolute;
+  bottom: 0;
+  opacity: 0.3;
+}
 .login-page {
   display: flex;
   height: 100vh; // 100vh 表示占据视口的100%
@@ -195,7 +217,7 @@ watch(isRegister, () => {
     position: relative;
     top: 1%;
   
-    height: 98%;
+    height: 80%;
   
     background: url('@/assets/image/粉色2.jpg') no-repeat center / 100% 100%;
     border-radius: 0 20px 20px 0;
@@ -222,6 +244,11 @@ watch(isRegister, () => {
       justify-content: space-between;
     }
   }
+  .author {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 150px;
+  }
   .beian {
     position: absolute;
     bottom: 0;
@@ -232,7 +259,7 @@ watch(isRegister, () => {
     font-size: 13px;
     text-align: center;
     padding: 10px;
-    background-color: rgba(245, 245, 245, 0.3);
+    z-index: 1;
     a {
       text-decoration: none;
       color: #666;
