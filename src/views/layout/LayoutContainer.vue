@@ -54,7 +54,7 @@ const goIndex = () => {
 <template>
   <el-container class="layout-container">
     <el-container>
-      <el-header>
+      <div class="header">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
           <el-menu-item index="1" @click="goIndex"><el-icon><HomeFilled /></el-icon>首页</el-menu-item>
           <el-menu-item index="2"><el-icon><HomeFilled /></el-icon>查看动漫</el-menu-item>
@@ -87,16 +87,16 @@ const goIndex = () => {
           </el-dropdown>
         </el-menu>
 
-      </el-header>
+      </div>
 
-      <el-main style="padding: 5px;">
+      <div class="main" style="">
         <router-view></router-view>
-      </el-main>
+      </div>
 
-      <el-footer> 动漫网站 ©2023-12-20 Developed by Hower |
+      <div class="foot"> 动漫网站 ©2023-12-20 Developed by Hower |
         <span> 网站备案号：</span>
           <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">豫ICP备2023030938号</a>
-      </el-footer>
+      </div>
     </el-container>
   </el-container>
 </template>
@@ -105,8 +105,11 @@ const goIndex = () => {
 .layout-container {
 
   height: 100vh;
-  .el-header {
-    width: 100%;
+  
+  .header {
+    position: absolute;
+    width: 100vw;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -129,10 +132,21 @@ const goIndex = () => {
       }
     }
   }
-  .el-footer {
+  .main {
+    position: absolute;
+    width: 100vw; 
+    padding: 0px; 
+    top: 60px;
+    height: calc(100vh - 90px);
+  }
+  .foot {
+    position: absolute;
+    height: 30px;
+    width: 100vw; 
+    bottom: 0;
     display: flex;
     align-items: center;
-    height: 2%;
+
     justify-content: center;
     font-size: 12px;
     color: #666;

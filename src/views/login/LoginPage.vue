@@ -158,7 +158,7 @@ watch(isRegister, () => {
         </el-row>
         <el-form-item prop="pwd"><el-input v-model="formModel.pwd" :prefix-icon="Lock" type="password" placeholder="请输入密码"></el-input></el-form-item>
         <el-form-item prop="repassword"><el-input v-model="formModel.repassword" :prefix-icon="Lock" type="password" placeholder="请输入再次密码"></el-input></el-form-item>
-          <el-form-item prop="account"><el-input v-model="formModel.account" :prefix-icon="User" placeholder="请输入学号"></el-input></el-form-item>
+          <el-form-item prop="account"><el-input v-model="formModel.account" :prefix-icon="User" placeholder="请输入手机号"></el-input></el-form-item>
 
           <el-form-item>
             <el-button @click="register" class="button" type="primary" auto-insert-space>注册</el-button>
@@ -171,7 +171,7 @@ watch(isRegister, () => {
       <!-- 登录相关表单 -->
       <el-form :model="formModel" :rules="rules" ref="form" size="large" autocomplete="off" v-else>
         <el-form-item><h1>欢迎登录</h1></el-form-item>
-        <el-form-item prop="account"><el-input v-model="formModel.account" :prefix-icon="User" placeholder="请输入用户名"></el-input></el-form-item>
+        <el-form-item prop="account"><el-input v-model="formModel.account" :prefix-icon="User" placeholder="请输入手机号"></el-input></el-form-item>
         <el-form-item prop="pwd"><el-input v-model="formModel.pwd" name="password" :prefix-icon="Lock" type="password" placeholder="请输入密码"></el-input></el-form-item>
         <el-form-item class="flex"><div class="flex"><el-checkbox>记住我</el-checkbox><el-link type="primary" :underline="false">忘记密码？</el-link></div></el-form-item>
         <el-form-item><el-button @click="login" class="button" type="primary" auto-insert-space>登录</el-button></el-form-item>
@@ -197,7 +197,7 @@ watch(isRegister, () => {
   </el-row>
   
 
-  <svg class="bolang" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 250">
+  <svg class="bolang" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 180">
     <path fill="#0099ff" fill-opacity="1" d="M0,160L40,133.3C80,107,160,53,240,42.7C320,32,400,64,480,69.3C560,75,640,53,720,69.3C800,85,880,139,960,149.3C1040,160,1120,128,1200,101.3C1280,75,1360,53,1400,42.7L1440,32L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path>
   </svg>
 

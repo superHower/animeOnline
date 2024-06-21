@@ -134,7 +134,7 @@ onMounted(() => {
 .m-video {
   display: inline-block;
   position: relative;
-  background: #000;
+  background: #ffffff;
   cursor: pointer;
 
   .m-icon-play {

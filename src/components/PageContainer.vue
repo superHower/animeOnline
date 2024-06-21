@@ -22,9 +22,8 @@ defineProps({
 
 <style lang="scss" scoped>
 .page-container {
-  min-height: 100%;
+  height: 100%;
   box-sizing: border-box;
-  border: deepskyblue 3px solid;
   .header {
     display: flex;
     justify-content: space-between;
@@ -32,5 +31,8 @@ defineProps({
     height: 30px;
     color: teal;
   }
+}
+.el-card {
+  --el-card-padding: 0px
 }
 </style>

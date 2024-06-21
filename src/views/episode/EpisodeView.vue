@@ -8,7 +8,7 @@ import {
   likeService, collectService, rankService, getUaInfoService
 } from '@/api/anime.js'
 import { ref } from 'vue'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 import { useUserStore } from '@/stores'
 import {ElMessage} from "element-plus";
 
@@ -28,7 +28,9 @@ const barrageList = ref([{}])
 const ranking = ref(null)
 const loading = ref(false)
 
-
+const display = ref(null); // 绑定视频div
+const videoWidth = ref(0);
+const videoHeight = ref(0);
 
 const commentForm = ref({
   content: '',
@@ -44,6 +46,13 @@ const barrageForm = ref({
 
 
 onMounted(() => {
+  getDimensions();
+  // 如果需要，可以设置一个 ResizeObserver 来监听尺寸变化
+  const resizeObserver = new ResizeObserver(() => {
+    getDimensions();
+  });
+  resizeObserver.observe(display.value);
+
   const url = new URL(window.location.href);
   AnimeId.value = url.searchParams.get('id');
   console.log(AnimeId.value)
@@ -53,6 +62,18 @@ onMounted(() => {
   getAnimeInfo()
   getCommentList()
 })
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+  }
+});
+
+watch([videoWidth, videoHeight], ([newWidth, newHeight], [oldWidth, oldHeight]) => {
+  console.log(`Width changed from ${oldWidth} to ${newWidth}`);
+  console.log(`Height changed from ${oldHeight} to ${newHeight}`);
+  // 这里可以执行其他操作，比如调整视频播放器的大小等
+});
+
 const getEpisodeList = async () => {
   loading.value = true
 
@@ -138,6 +159,12 @@ const confirmDialog = async () => {
   ElMessage.success('打分成功')
 }
 
+const getDimensions = () => {
+      if (display.value) {
+        videoWidth.value = display.value.offsetWidth;
+        videoHeight.value = display.value.offsetHeight;
+      }
+    };
 </script>
 
 <template>
@@ -145,8 +172,8 @@ const confirmDialog = async () => {
     <div class="common-layout">
         <div class="episode-main-left">
           <div class="display-barrage">{{barrageList[0].barrage}}</div>
-          <div class="display-video">
-              <VideoPlayer :src="videoSrc" :second="3" :width="800" :height="450" />
+          <div class="display-video" ref="display">
+            <VideoPlayer :src="videoSrc" :second="3" :width="videoWidth" :height="videoHeight" />
           </div>
       
           <div class="display-footer">
@@ -257,7 +284,6 @@ const confirmDialog = async () => {
 
           </div>
         </div>
-      
     </div>
     <el-dialog v-model="centerDialogVisible" title="评分" width="30%" center>
       <div class="demo-rate-block">
@@ -276,59 +302,60 @@ const confirmDialog = async () => {
 
 <style scoped lang="scss">
 .common-layout {
-  height: 78vh;
-  width: 100vw;
+  height: calc(100vh - 120px);
+
   display: flex;
   flex-direction: row;
-
+  justify-content: space-evenly;
   .dialog-footer button:first-child {
     margin-right: 10px;
 
   }
 
   .episode-main-left {
-    width: 70%;
-    border: pink solid 2px;
+    width: 50%;
     left: 2px;
-    background-color: grey;
+    background-color: rgb(255, 255, 255);
     font-size: 40px;
     color: white;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     .display-barrage {
-      height: 5%;
-      border: #b88230 solid 1px;
+      height: 40px;
+      width: 100%;
+      margin: 0 auto;
       color: orangered;
       font-size: 24px;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #1D1D1D;
+      background-color: #ffffff;
     }
     .display-video {
-      height: 94%;
-      min-width: 800px;
-      border: #b88230 solid 1px;
-      background-color: black;
+      height: 74.5%;
+      width: 100%;
+      margin: 0 auto;
+      background-color: rgb(255, 255, 255);
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .display-footer {
-      height: 6%;
+      height: 40px;
+      width: 100%;
+      margin: 0 auto;
       display: flex;
       flex-direction: row;
       justify-content: space-evenly;
       padding-top: 10px;
-      background-color: #1D1D1D;
+      background-color: #565656;
     }
   }
 
   .episode-main-right {
     width: 30%;
-
 
     .episode-info-top {
       height: 5%;
