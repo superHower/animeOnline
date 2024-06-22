@@ -25,11 +25,11 @@ export const getUaInfoService = (uid, aid) => request.get('/ua/info', { params: 
 
 
 // 点赞
-export const likeService = (uid, aid) =>
-    request.patch(`/ua/updateLike?uid=${uid}&aid=${aid}`)
+export const likeService = (uid, aid, key) =>
+    request.patch(`/ua/updateLike?uid=${uid}&aid=${aid}&key=${key}`)
 // 收藏
-export const collectService = (uid, aid) =>
-    request.patch(`/ua/updateCollect?uid=${uid}&aid=${aid}`)
+export const collectService = (uid, aid, key) =>
+    request.patch(`/ua/updateCollect?uid=${uid}&aid=${aid}&key=${key}`)
 // 评分
 export const rankService = (uid, aid, ranking) =>
     request.patch(`/ua/updateRanking?uid=${uid}&aid=${aid}&ranking=${ranking}`)

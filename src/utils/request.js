@@ -32,9 +32,7 @@ instance.interceptors.response.use(
   (res) => {
     // TODO 4. 摘取核心响应数据
     if (res.data.code === 200) {
-      console.log("结果");
-      console.log(res);
-      ElMessage.success(res.data.message);
+
       return Promise.resolve(res.data);
     } else if (res.data.code === 401) {
       ElMessage.error(res.data.message);

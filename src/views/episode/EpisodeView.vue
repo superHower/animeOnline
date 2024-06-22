@@ -10,7 +10,6 @@ import {
 import { ref } from 'vue'
 import { onMounted, } from 'vue'
 import { useUserStore } from '@/stores'
-import {ElMessage} from "element-plus";
 
 import VideoPlayer from '@/components/VideoPlayer.vue'
 
@@ -155,7 +154,6 @@ const onSendBarrage = async () => {
   barrageForm.value.time = formattedDate
   console.log(barrageForm.value)
   await sendBarrageService(barrageForm.value)
-  ElMessage.success('已发送弹幕')
 }
 const getBarrageList = async () => {
   if (EpisodeId.value === null) {
@@ -164,25 +162,40 @@ const getBarrageList = async () => {
   }
   await getBarrageService(EpisodeId.value).then((res)=> {
     barrageList.value = res.data
-    ElMessage.success('获取弹幕成功')
   })
 
 }
 const onLike = async () => {
-  await likeService(userStore.user.id, AnimeId.value).then(()=> {
-    ElMessage.success('点赞成功')
+  let key = 0, msg = ''
+  if(uaInfo.value.isLike === 1) {
+    key = 0
+    msg = '取消点赞'
+  }else {
+    key = 1
+    msg = '点赞成功'
+  }
+  await likeService(userStore.user.id, AnimeId.value, key).then(()=> {
+    ElMessage.success(msg)
     getUAInfo()
     getAnimeInfo()
   })
 
 }
 const onCollect = async () => {
-  await collectService(userStore.user.id, AnimeId.value).then(()=> {
-    ElMessage.success('收藏成功')
+  let msg = '', key = 0
+  if(uaInfo.value.collectionTime) {
+    key = 0
+    msg = '取消收藏'
+  }else{
+    key = 1
+    msg = '收藏成功'
+  }
+  await collectService(userStore.user.id, AnimeId.value, key).then(()=> {
+    ElMessage.success(msg)
     getUAInfo()
     getAnimeInfo()
   })
-
+  
 }
 const confirmDialog = async () => {
   console.log(ranking.value * 2)
