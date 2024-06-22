@@ -105,11 +105,16 @@ const goIndex = () => {
 .layout-container {
 
   height: 100vh;
-  
+  width: 100%;
   .header {
-    position: absolute;
-    width: 100vw;
-    height: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px; /* 设置header的高度 */
+    background-color: #f8f9fa; /* 背景颜色，可根据需要调整 */
+    z-index: 1000; 
+    
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -133,16 +138,15 @@ const goIndex = () => {
     }
   }
   .main {
+    width: calc(100% - 40px );
     position: absolute;
-    width: 100vw; 
-    padding: 0px; 
+    padding: 0 20px; 
     top: 60px;
-    height: calc(100vh - 90px);
   }
   .foot {
     position: absolute;
+    width: 100%;
     height: 30px;
-    width: 100vw; 
     bottom: 0;
     display: flex;
     align-items: center;

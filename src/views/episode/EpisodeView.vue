@@ -24,6 +24,7 @@ const animeInfo = ref({});
 const episodeList = ref([])
 const commentList = ref([])
 const barrageList = ref([{}])
+const isInfo = ref(true)
 
 const ranking = ref(null)
 const loading = ref(false)
@@ -31,6 +32,7 @@ const loading = ref(false)
 const display = ref(null); // 绑定视频div
 const videoWidth = ref(0);
 const videoHeight = ref(0);
+const tableHeight = ref(0)
 
 const commentForm = ref({
   content: '',
@@ -62,17 +64,7 @@ onMounted(() => {
   getAnimeInfo()
   getCommentList()
 })
-onUnmounted(() => {
-  if (resizeObserver) {
-    resizeObserver.disconnect();
-  }
-});
 
-watch([videoWidth, videoHeight], ([newWidth, newHeight], [oldWidth, oldHeight]) => {
-  console.log(`Width changed from ${oldWidth} to ${newWidth}`);
-  console.log(`Height changed from ${oldHeight} to ${newHeight}`);
-  // 这里可以执行其他操作，比如调整视频播放器的大小等
-});
 
 const getEpisodeList = async () => {
   loading.value = true
@@ -160,18 +152,23 @@ const confirmDialog = async () => {
 }
 
 const getDimensions = () => {
-      if (display.value) {
-        videoWidth.value = display.value.offsetWidth;
-        videoHeight.value = display.value.offsetHeight;
-      }
-    };
+  if (display.value) {
+    videoWidth.value = display.value.offsetWidth;
+    videoHeight.value = display.value.offsetHeight;
+    tableHeight.value = videoHeight.value - 110;
+  }
+};
+const handleChangeTab = (val) => {
+  isInfo.value = val
+}
 </script>
 
 <template>
   <page-container title="动漫剧集">
     <div class="common-layout">
         <div class="episode-main-left">
-          <div class="display-barrage">{{barrageList[0].barrage}}</div>
+          <div class="display-barrage">{{ animeInfo.name }}</div>
+          <div class="display-barrage real">{{barrageList[0].barrage}}</div>
           <div class="display-video" ref="display">
             <VideoPlayer :src="videoSrc" :second="3" :width="videoWidth" :height="videoHeight" />
           </div>
@@ -196,91 +193,74 @@ const getDimensions = () => {
         <div class="episode-main-right">
           <div class="episode-info-top"><strong>{{ animeInfo.name }}</strong></div>
           <div class="episode-info-main">
-            <el-tabs type="border-card" style="height: 100%;">
-              <el-tab-pane label="简介">
+            <div class="tabs-head">
+              <el-button @click="handleChangeTab(true)">简介</el-button>
+              <el-button @click="handleChangeTab(false)">评论</el-button>
+            </div>
+
+            <div class="tab-box" v-show="isInfo" label="简介">
+              <div>
                 <div class="info"><strong>简介: </strong>{{ animeInfo.info }}</div>
-                <div class="time">
-                  上映时间：{{ animeInfo.time }}
-                </div>
+                <div class="time"> 上映时间：{{ animeInfo.time }}</div>
                 <div class="count">
                   <span class="like">
-                    <el-icon color="skyBlue" @click="centerDialogVisible = true">
-                      <StarFilled />
-                    </el-icon>
-                    评分：{{ animeInfo.ranking }}
+                    <el-icon color="skyBlue" @click="centerDialogVisible = true"> <StarFilled /></el-icon> 评分：{{ animeInfo.ranking }}
                   </span>
                   <span class="like" style="position: relative; left: 25px">
-                    <el-icon color="red" @click="onLike">
-                      <Opportunity />
-                    </el-icon>
-                    点赞数：{{ animeInfo.likeCnt }}
+                    <el-icon color="red" @click="onLike"><Opportunity /> </el-icon> 点赞数：{{ animeInfo.likeCnt }}
                   </span>
                   <span class="like" style="position: relative; left: 50px">
-                    <el-icon color="darkOrange" @click="onCollect">
-                      <StarFilled />
-                    </el-icon>
-                    收藏数：{{ animeInfo.ccnt }}
+                    <el-icon color="darkOrange" @click="onCollect"><StarFilled /></el-icon>收藏数：{{ animeInfo.ccnt }}
                   </span>
                 </div>
-                <el-table :data="episodeList" style="width: 90%;height: 380px" row-style="background: skyblue"
-                  @row-click="openEpisode">
-                  <el-table-column prop="number" label="集数" width="100" />
-                  <el-table-column prop="name" label="名字" width="180" />
-                  <el-table-column prop="duration" label="时长" width="180" />
-                  <el-table-column prop="barrages" label="弹幕数" />
-               
-                </el-table>
-              </el-tab-pane>
-              <el-tab-pane label="最新评论">
-                <el-form :model="commentForm">
-                  <el-form-item>
-                    <el-col :span="18">
-                      <el-input placeholder="请输入你的评论吧" type="textarea" v-model="commentForm.content"></el-input>
-                    </el-col>
-                    <el-col :span="4" :offset="2">
-                      <el-button type="warning" round @click="onSendComment"><strong>发布评论</strong></el-button>
-                    </el-col>
-                  </el-form-item>
-                </el-form>
-                <el-scrollbar height="500px">
-                  <div v-for="c in commentList" :key="c" class="scrollbar-demo-item">
-                    <el-descriptions class="margin-top" :column="2" :size="size" border>
-                      <el-descriptions-item>
+              </div>
 
-                        <template #label>
-                          <div class="cell-item"><el-icon>
-                              <User />
-                            </el-icon>用户</div>
-                        </template>
-                        {{ c.userName }}
-                      </el-descriptions-item>
-                      <el-descriptions-item>
 
-                        <template #label>
-                          <div class="cell-item"><el-icon>
-                              <Stopwatch />
-                            </el-icon>时间</div>
-                        </template>
-                        {{ c.time }}
-                      </el-descriptions-item>
-                      <el-descriptions-item>
+              <el-table :data="episodeList" :height="tableHeight" @row-click="openEpisode">
+                <el-table-column prop="number" label="集数" width="80" />
+                <el-table-column prop="name" label="名字" width="200" />
+                <el-table-column prop="duration" label="时长" width="80" />
+                <el-table-column prop="barrages" label="弹幕数" />
+             
+              </el-table>
 
-                        <template #label>
-                          <div class="cell-item"><el-icon>
-                              <List />
-                            </el-icon>评论</div>
-                        </template>
-                        <div style="font-size: 18px;border: #22d5ce solid 2px; padding: 5px">
-                          <strong>{{ c.content }}</strong>
-                        </div>
-                      </el-descriptions-item>
-                    </el-descriptions>
+            </div >
+            <div class="tab-box" v-show="!isInfo" label="最新评论">
+              <el-form class="comment-form" :model="commentForm">
+                <el-form-item>
+                  <div class="comment-box">
+                    <el-input placeholder="请输入你的评论吧" type="textarea" v-model="commentForm.content"></el-input>
+                    <el-button type="primary" round @click="onSendComment">发布评论</el-button>
                   </div>
+                </el-form-item>
+              </el-form>
+              <div class="comment-detail">
+                <div v-for="c in commentList" :key="c" class="comment-detail-box">
+                  <el-descriptions class="margin-top" :column="2" :size="size" border>
+                    <el-descriptions-item>
+                      <template #label><div class="cell-item"><el-icon> <User /></el-icon>用户</div> </template>
+                      {{ c.userName }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label> <div class="cell-item"><el-icon><Stopwatch /></el-icon>时间</div></template>
+                      {{ c.time }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                      <template #label><div class="cell-item"><el-icon><List /></el-icon>评论</div></template>
+                      <div style="font-size: 18px;border: #22d5ce solid 2px; padding: 5px">
+                        <strong>{{ c.content }}</strong>
+                      </div>
+                    </el-descriptions-item>
+                  </el-descriptions>
+                </div>
 
 
-                </el-scrollbar>
-              </el-tab-pane>
-            </el-tabs>
+              </div>
+            </div >
+
+
+
+
 
           </div>
         </div>
@@ -302,7 +282,7 @@ const getDimensions = () => {
 
 <style scoped lang="scss">
 .common-layout {
-  height: calc(100vh - 120px);
+  height: calc(100vh - 140px);
 
   display: flex;
   flex-direction: row;
@@ -325,14 +305,20 @@ const getDimensions = () => {
       height: 40px;
       width: 100%;
       margin: 0 auto;
-      color: orangered;
+      color: rgb(0, 0, 0);
       font-size: 24px;
+
+    }
+    .real {
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #ffffff;
+      z-index: 2;
+      color: orangered;
     }
     .display-video {
+      position: relative;
+      top: -40px;
       height: 74.5%;
       width: 100%;
       margin: 0 auto;
@@ -340,9 +326,12 @@ const getDimensions = () => {
       display: flex;
       justify-content: center;
       align-items: center;
+      box-shadow: 0 0 8px var(--bpx-box-shadow, #e5e9ef);
     }
 
     .display-footer {
+      position: relative;
+      top: -40px;
       height: 40px;
       width: 100%;
       margin: 0 auto;
@@ -369,9 +358,18 @@ const getDimensions = () => {
 
     .episode-info-main {
       height: 95%;
+      .tabs-head {
+        height: 30px;
+        position: relative;
+        top: 5px;
+      }
+      .tab-box {
+        height: calc(100% - 40px);
+      }
+
       .info {
-        margin: 0 6px 10px 5px;
-        height: 15vh;
+        height: 100px;
+        margin-top: 10px;
         overflow-y: scroll;
       
         strong {
@@ -380,11 +378,12 @@ const getDimensions = () => {
       }
     
       .time {
+        margin-top: 10px;
         color: #999;
       }
     
       .count {
-        margin-top: 20px;
+        margin-top: 10px;
         .like {
           display: inline-block;
           margin-right: 20px;
@@ -397,9 +396,9 @@ const getDimensions = () => {
       }
     
       .el-table {
-        margin: 20px 6px 0 0;
+        margin-top: 10px;
         border: skyblue 2px solid;
-        height: 70vh; // 将高度设置为100%
+        border-radius: 10px;
     
         .el-table-column {
           &.is-bordered {
@@ -416,26 +415,30 @@ const getDimensions = () => {
         }
       }
     
-      .el-form {
-        margin-top: 20px;
-        height: 100%; // 将高度设置为100%
-    
-        .el-form-item {
-          .el-input {
-            width: 100%;
-          }
-    
+      .comment-form {
+        margin-top: 10px;
+        height: 50px;
+        .comment-box{
+          display: flex;
+          width: 100%;
+          justify-content: space-around;
+          flex-direction: column;
           .el-button {
-            margin-left: 10px;
+            width: 100px;
+            position: relative;
+            left: calc(100% - 100px);
+            top: 5px;
           }
+
+
         }
       }
     
-      .el-scrollbar {
-        margin-top: 20px;
-        height: 100%; // 将高度设置为100%
-    
-        .scrollbar-demo-item {
+      .comment-detail {
+        margin: 45px 0 0px;
+        height: calc(100% - 105px);
+        overflow-y: auto;
+        .comment-detail-box {
           margin-bottom: 10px;
           padding: 10px;
           border: 1px solid #ccc;
@@ -449,10 +452,6 @@ const getDimensions = () => {
       }
     }
   }
-
-
-
-
 
 }
 </style>

@@ -124,7 +124,7 @@ const onSearchByCondition = async () => {
     </template>
 
     <!--    条件查询表单  -->
-    <el-form :model="params" class="confForm">
+    <el-form :model="params" class="confForm" style="display: flex">
       <el-form-item>
         <div class="conf-label">地区：</div>
         <el-radio-group v-model="checkboxGroup1">
@@ -138,13 +138,13 @@ const onSearchByCondition = async () => {
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <div class="conf-label">操作：</div>
+        <div class="conf-label"></div>
         <el-button type="primary" @click="onSearchByCondition">条件搜索</el-button>
         <el-button @click="onReset">重置</el-button>
       </el-form-item>
     </el-form>
     <!--    轮播图  -->
-    <el-carousel :interval="4000" type="card" height="150px">
+    <el-carousel :interval="4000" type="card" height="250px">
       <el-carousel-item><img src="@/assets/image/w-1.png" class="image" alt="" /></el-carousel-item>
       <el-carousel-item><img src="@/assets/image/w-2.png" class="image" alt="" /></el-carousel-item>
       <el-carousel-item><img src="@/assets/image/w-3.png" class="image" alt="" /></el-carousel-item>
@@ -204,8 +204,7 @@ const onSearchByCondition = async () => {
 
 .confForm {
   .el-form-item {
-    margin-bottom: 8px;
-    padding-bottom: 3px;
+    margin: 10px 0;
 
     .conf-label {
       font-weight: bold;
