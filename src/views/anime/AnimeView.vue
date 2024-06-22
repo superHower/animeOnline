@@ -146,7 +146,6 @@ const onSearchByCondition = async () => {
       <el-carousel-item><img src="@/assets/image/w-1.png" class="image" alt="" /></el-carousel-item>
       <el-carousel-item><img src="@/assets/image/w-2.png" class="image" alt="" /></el-carousel-item>
       <el-carousel-item><img src="@/assets/image/w-3.png" class="image" alt="" /></el-carousel-item>
-      <el-carousel-item><img src="@/assets/image/w-3.png" class="image" alt="" /></el-carousel-item>
     </el-carousel>
     <!-- 动漫卡片 -->
     <div class="grid-container">
@@ -228,9 +227,8 @@ const onSearchByCondition = async () => {
 
 .el-carousel {
   position: relative;
-  left: 10%;
   margin: 5px;
-  width: 80%;
+  width: 100%;
 
   // 轮播图
   .el-carousel__item h3 {

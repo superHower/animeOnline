@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { getDetailAnimeService, editAnimeService, addAnimeService, getAnimeListService } from '@/api/anime.js'
+import { getAnimeEpisodesService } from '@/api/episode.js'
 import ImageUpload from '@/components/ImageUpload.vue'
 // 控制抽屉显示隐藏
 const visibleDrawer = ref(false)
@@ -12,7 +13,8 @@ const defaultForm = {
   info:'',
   time:'',
   nation:'',
-  imgUrl:''
+  imgUrl:'',
+  episodes: []
 }
 // 准备数据
 const formModel = ref({ ...defaultForm })
@@ -57,19 +59,19 @@ const handleUploaded = (url) => {
 
 const open = async (id) => {
   visibleDrawer.value = true // 显示抽屉
-  console.log('id', id)
 
-  if (id) { // 编辑 - 数据回显 (基于 row.id 发送请求)
+  if (id) {
     isAdd.value = false
-    const res = await getDetailAnimeService(id)
-    console.log(res.data)
+    await getDetailAnimeService(id).then((res) => {
+      formModel.value = { ...res.data } 
+    })
+    await getAnimeEpisodesService(id).then((res) => {
+      formModel.value.episodes = res.data
+    })
 
-    formModel.value = { ...res.data } 
-    console.log(formModel.value.imgUrl)
   } else {
-    // 添加 - 数据重置
     isAdd.value = true
-    formModel.value = { ...defaultForm } // 基于默认的数据，重置form数据
+    formModel.value = { ...defaultForm } 
 
   }
 }
@@ -87,6 +89,7 @@ defineExpose({
       direction="rtl"
       size="30%"
   >
+    <el-button @click="onPublish()" type="primary" style="position: absolute;top: 55px;">保存</el-button>
     <el-form :model="formModel" ref="formRef" label-width="100px">
       <el-form-item label="名称" prop="name">
         <el-input v-model="formModel.name" placeholder="请输入动漫名称"></el-input>
@@ -103,19 +106,27 @@ defineExpose({
 <!--      上传-->
       <span style="padding: 10px"></span>选择封面
       <div style="margin-left: 100px;">     
-        <ImageUpload :upUrl="formModel.imgUrl" @uploaded="handleUploaded" >
+        <ImageUpload :upUrl="formModel.imgUrl" :types="'img'" @uploaded="handleUploaded" >
         </ImageUpload>
       </div>
 
-      <el-form-item>
-        <el-button @click="onPublish()" type="primary">确认</el-button>
-      </el-form-item>
-     
+      <el-table :data="formModel.episodes" height="300" border>
+        <el-table-column type="index" label="序号"></el-table-column>
+        <el-table-column label="剧集名称">
+          <template #default="scope">
+            <el-input v-model="scope.row.name" placeholder="请输入剧集名称"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="剧集封面">
+          <template #default="scope">
+            <ImageUpload :upUrl="scope.row.videoUrl" :types="'video'" @uploaded="handleUploaded(scope.row)">
+            </ImageUpload>
+          </template>
+        </el-table-column>
+      </el-table>
+
     </el-form>
   </el-drawer>
-
-
-
 </template>
 
 <style lang="scss" scoped>
