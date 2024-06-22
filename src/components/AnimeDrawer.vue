@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { getDetailAnimeService, editAnimeService, addAnimeService } from '@/api/anime.js'
+import { getDetailAnimeService, editAnimeService, addAnimeService, getAnimeListService } from '@/api/anime.js'
 import ImageUpload from '@/components/ImageUpload.vue'
 // 控制抽屉显示隐藏
 const visibleDrawer = ref(false)
@@ -17,6 +17,9 @@ const defaultForm = {
 // 准备数据
 const formModel = ref({ ...defaultForm })
 
+const emit = defineEmits(['update-list']); // 定义一个自定义事件
+
+
 // 提交
 const onPublish = async () => {
   console.log(formModel.value.time)
@@ -29,14 +32,20 @@ const onPublish = async () => {
   console.log("表单中的内容是")
   console.log(formModel.value)
   if (!isAdd.value) {    // 编辑操作
-    await editAnimeService(formModel.value)
-    ElMessage.success('修改成功')
-    visibleDrawer.value = false
+    await editAnimeService(formModel.value).then(() => {
+      ElMessage.success('修改成功')
+      visibleDrawer.value = false
+      emit('update-list'); 
+    })
+
 
   } else {  // 添加操作
-    await addAnimeService(formModel.value)
-    ElMessage.success('添加成功')
-    visibleDrawer.value = false
+    await addAnimeService(formModel.value).then(()=> {
+      ElMessage.success('添加成功')
+      visibleDrawer.value = false
+      emit('update-list'); 
+    })
+
   }
 }
 

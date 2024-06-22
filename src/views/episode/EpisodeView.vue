@@ -5,10 +5,10 @@ import PageContainer from '@/components/PageContainer.vue'
 import { getAnimeEpisodesService, sendBarrageService, getBarrageService } from '@/api/episode.js'
 import {
   getDetailAnimeService, getLatestComments, sendCommentService,
-  likeService, collectService, rankService, getUaInfoService
+  likeService, collectService, rankService, getUaInfoService, AddUaService
 } from '@/api/anime.js'
 import { ref } from 'vue'
-import { onMounted, onUnmounted, watch } from 'vue'
+import { onMounted, } from 'vue'
 import { useUserStore } from '@/stores'
 import {ElMessage} from "element-plus";
 
@@ -21,6 +21,7 @@ const centerDialogVisible = ref(false)
 const AnimeId = ref(null);
 const EpisodeId = ref(null);
 const animeInfo = ref({});
+const uaInfo = ref({});
 const episodeList = ref([])
 const commentList = ref([])
 const barrageList = ref([{}])
@@ -57,15 +58,14 @@ onMounted(() => {
 
   const url = new URL(window.location.href);
   AnimeId.value = url.searchParams.get('id');
-  console.log(AnimeId.value)
-
 
   getEpisodeList()
   getAnimeInfo()
   getCommentList()
+  getUAInfo()
 })
 
-
+/* 查询 */
 const getEpisodeList = async () => {
   loading.value = true
 
@@ -78,21 +78,35 @@ const getEpisodeList = async () => {
 const getAnimeInfo = async () => {
   loading.value = true
 
-  const res1 = await getDetailAnimeService(AnimeId.value)
-  animeInfo.value = res1.data
-  console.log(animeInfo.value)
+  await getDetailAnimeService(AnimeId.value).then((res)=> {
+    animeInfo.value = res.data
+  }).finally(()=> {
+    loading.value = false
+  })
+}
+const getUAInfo = async () => {
+  loading.value = true
 
-  loading.value = false
+  await getUaInfoService(userStore.user.id, AnimeId.value).then((res)=> {
+    if(!res.data[0]) {
+      onAddUa() // 添加ua
+    } else {
+      uaInfo.value = res.data[0]
+    }
+  }).finally(()=> {
+    loading.value = false
+  })
 }
 const getCommentList = async () => {
   loading.value = true
-
-  const res = await getLatestComments(AnimeId.value)
-  commentList.value = res.data
-  console.log(commentList.value)
-
-  loading.value = false
+  await getLatestComments(AnimeId.value).then((res)=> {
+    commentList.value = res.data
+    console.log(commentList.value)
+  }).finally(()=>{
+    loading.value = false
+  })
 }
+
 
 const openEpisode = (row) => {
   console.log(row)
@@ -100,16 +114,32 @@ const openEpisode = (row) => {
   videoSrc.value = row.videoUrl
 }
 const onSendComment = async () => {
-  const res = await getUaInfoService(userStore.user.id, AnimeId.value)
-  commentForm.value.uaid = res.data[0].id
+  commentForm.value.uaid = uaInfo.value.id // 拿到uaid
   const now = new Date().toLocaleString()
   const formattedDate = now.replace(/(\d{4})\/(\d{1,2})\/(\d{1,2})/, (match, year, month, day) => {
     return year + '-' + (month.length === 1 ? '0' + month : month) + '-' + (day.length === 1 ? '0' + day : day);
   });
   commentForm.value.time = formattedDate
-  console.log(commentForm.value.time)
-  await sendCommentService(commentForm.value)
-  ElMessage.success('评论成功')
+  await sendCommentService(commentForm.value).then(()=> {
+      ElMessage.success('评论成功')
+      getCommentList()
+      commentForm.value.content = ''
+  }).catch(()=>{
+    ElMessage.success('评论发送失败')
+  })
+
+}
+const onAddUa = async () => {
+  const obj = {
+    uid: userStore.user.id,
+    aid: AnimeId.value,
+    isLike: 0,
+    ranking: null,
+    collectionTime: null,
+  }
+  await AddUaService(obj).then(()=> {
+    getUAInfo()
+  })
 }
 const onSendBarrage = async () => {
   if (EpisodeId.value === null) {
@@ -132,23 +162,37 @@ const getBarrageList = async () => {
     ElMessage.warning('请先选择一个剧集')
     return
   }
-  const res = await getBarrageService(EpisodeId.value)
-  barrageList.value = res.data
-  ElMessage.success('获取弹幕成功')
+  await getBarrageService(EpisodeId.value).then((res)=> {
+    barrageList.value = res.data
+    ElMessage.success('获取弹幕成功')
+  })
+
 }
 const onLike = async () => {
-  await likeService(userStore.user.id, AnimeId.value)
-  ElMessage.success('点赞成功')
+  await likeService(userStore.user.id, AnimeId.value).then(()=> {
+    ElMessage.success('点赞成功')
+    getUAInfo()
+    getAnimeInfo()
+  })
+
 }
 const onCollect = async () => {
-  await collectService(userStore.user.id, AnimeId.value)
-  ElMessage.success('收藏成功')
+  await collectService(userStore.user.id, AnimeId.value).then(()=> {
+    ElMessage.success('收藏成功')
+    getUAInfo()
+    getAnimeInfo()
+  })
+
 }
 const confirmDialog = async () => {
   console.log(ranking.value * 2)
-  await rankService(userStore.user.id, AnimeId.value, ranking.value * 2)
-  centerDialogVisible.value = false
-  ElMessage.success('打分成功')
+  await rankService(userStore.user.id, AnimeId.value, ranking.value * 2).then(()=> {
+    centerDialogVisible.value = false
+    ElMessage.success('打分成功')
+    getUAInfo()
+    getAnimeInfo()
+  })
+
 }
 
 const getDimensions = () => {
@@ -191,7 +235,10 @@ const handleChangeTab = (val) => {
 
         </div>
         <div class="episode-main-right">
-          <div class="episode-info-top"><strong>{{ animeInfo.name }}</strong></div>
+          <div class="episode-info-top">
+            <span><strong>{{ animeInfo.name }}</strong></span>
+            <span class="nation">{{ animeInfo.nation }}</span>
+          </div>
           <div class="episode-info-main">
             <div class="tabs-head">
               <el-button @click="handleChangeTab(true)">简介</el-button>
@@ -204,13 +251,13 @@ const handleChangeTab = (val) => {
                 <div class="time"> 上映时间：{{ animeInfo.time }}</div>
                 <div class="count">
                   <span class="like">
-                    <el-icon color="skyBlue" @click="centerDialogVisible = true"> <StarFilled /></el-icon> 评分：{{ animeInfo.ranking }}
+                    <el-icon :color="uaInfo.ranking ? 'skyBlue' : 'grey'" @click="centerDialogVisible = true"> <StarFilled /></el-icon> 评分：{{ animeInfo.ranking }}
                   </span>
                   <span class="like" style="position: relative; left: 25px">
-                    <el-icon color="red" @click="onLike"><Opportunity /> </el-icon> 点赞数：{{ animeInfo.likeCnt }}
+                    <el-icon :color="uaInfo.isLike !== 0 ? 'red' : 'grey'" @click="onLike"><Opportunity /> </el-icon> 点赞数：{{ animeInfo.likeCnt }}
                   </span>
                   <span class="like" style="position: relative; left: 50px">
-                    <el-icon color="darkOrange" @click="onCollect"><StarFilled /></el-icon>收藏数：{{ animeInfo.ccnt }}
+                    <el-icon :color="uaInfo.collectionTime ? 'darkOrange' : 'grey'" @click="onCollect"><StarFilled /></el-icon>收藏数：{{ animeInfo.cCnt }}
                   </span>
                 </div>
               </div>
@@ -235,8 +282,8 @@ const handleChangeTab = (val) => {
                 </el-form-item>
               </el-form>
               <div class="comment-detail">
-                <div v-for="c in commentList" :key="c" class="comment-detail-box">
-                  <el-descriptions class="margin-top" :column="2" :size="size" border>
+                <div v-for="(c, index) in commentList" :key="index" class="comment-detail-box">
+                  <el-descriptions class="margin-top" :column="2" border>
                     <el-descriptions-item>
                       <template #label><div class="cell-item"><el-icon> <User /></el-icon>用户</div> </template>
                       {{ c.userName }}
@@ -347,17 +394,25 @@ const handleChangeTab = (val) => {
     width: 30%;
 
     .episode-info-top {
-      height: 5%;
-      border: #b88230 solid 1px;
-      color: orangered;
+      height: 30px;
+      color: rgb(110, 110, 110);
+      border-bottom: #c4c4c4 1px solid;
       font-size: 24px;
       display: flex;
-      justify-content: center;
+      justify-content: space-evenly;
       align-items: center;
+      padding: 5px 0;
+      .nation {
+        font-size: 14px;
+        width: 50px;
+        background-color: rgb(255, 230, 234);
+        border-radius: 10px;
+        text-align: center;
+      }
     }
 
     .episode-info-main {
-      height: 95%;
+      height: calc(100% - 40px);
       .tabs-head {
         height: 30px;
         position: relative;

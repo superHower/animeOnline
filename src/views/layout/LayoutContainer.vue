@@ -61,10 +61,6 @@ const goIndex = () => {
           <el-menu-item index="6"><el-icon><HomeFilled /></el-icon>关于</el-menu-item>
         </el-menu>
 
-        <el-form >
-          <el-input type="input" placeholder="搜索"></el-input>
-        </el-form>
-
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
           <span class="el-dropdown__box">
             <el-menu-item index="1"><el-icon><HomeFilled /></el-icon>账号：<strong> {{ info.account }}</strong></el-menu-item>
@@ -112,12 +108,22 @@ const goIndex = () => {
     left: 0;
     right: 0;
     height: 60px; /* 设置header的高度 */
-    background-color: #f8f9fa; /* 背景颜色，可根据需要调整 */
+    background-image: url('@/assets/image/bg.png');
     z-index: 1000; 
     
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .el-menu {
+      background-color: transparent;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      .el-menu-item {
+        color: #fff;
+        font-size: 16px;
+      }
+    }
     .el-menu-demo {
        height: 40px;
     }

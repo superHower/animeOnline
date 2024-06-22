@@ -41,15 +41,13 @@ const getAnimeList = async () => {
   loading.value = true
   const res = await getAnimeListService()
   animeList.value = res.data
-  console.log(animeList.value)
 
   animeList.value.forEach((anime) => {
     if (!nationList.value.includes(anime.nation)) {
       nationList.value.push(anime.nation)
     }
   })
-  console.log('地区：' + nationList.value)
-  console.log(animeList.value)
+
   loading.value = false
 }
 
@@ -160,7 +158,8 @@ const onSearchByCondition = async () => {
           <div style="padding: 14px">
             <div class="card-top">
               <span>{{ anime.name }}</span>
-              <span class="time">上映时间：{{ anime.time.substring(0, 10) }}</span>
+              <span class="time">时间：{{ anime.time.substring(0, 10) }}</span>
+              <span class="time">{{ anime.nation }}</span>
             </div>
             <div class="card-middle">
               <div class="info">
@@ -180,7 +179,7 @@ const onSearchByCondition = async () => {
               </el-row>
 
               <el-row>
-                <el-col :span="12"> <el-icon color="darkOrange"> <StarFilled /> </el-icon>收藏数：{{ anime.ccnt }}</el-col>
+                <el-col :span="12"> <el-icon color="darkOrange"> <StarFilled /> </el-icon>收藏数：{{ anime.cCnt }}</el-col>
                 <el-col :span="12"> <el-icon color="darkOrange">  <StarFilled /> </el-icon>总集数：{{ anime.count }}</el-col>
               </el-row>
             </div>
@@ -189,7 +188,7 @@ const onSearchByCondition = async () => {
       </div>
     </div>
 
-    <anime-drawer ref="animeEditRef"></anime-drawer>
+    <anime-drawer ref="animeEditRef" @update-list="getAnimeList"></anime-drawer>
   </page-container>
 </template>
 
