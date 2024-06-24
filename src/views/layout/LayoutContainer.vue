@@ -95,9 +95,9 @@ const handleSelect = (index) => {
         <router-view></router-view>
       </div>
 
-      <div class="foot"> 动漫网站 ©2023-12-20 Developed by Hower |
+      <div class="foot"> Hower动漫 | ©2023-12-20 | Developed by Hower |
         <span> 网站备案号：</span>
-          <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">豫ICP备2023030938号</a>
+          <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">	京ICP备2024063056号</a>
       </div>
     </el-container>
   </el-container>

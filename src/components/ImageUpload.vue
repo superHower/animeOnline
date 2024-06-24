@@ -14,7 +14,7 @@
         <el-progress :percentage="uploadProgress" :stroke-width="15" :status=uploading striped striped-flow :duration="10"/>
       </div>
       <div v-if="uploading && uploadProgress === 100" class="upload-process-finish">
-        加速处理中...
+        上传中...预计耗时: {{ upTime }}s
       </div>
     </form>
   </div>
@@ -23,17 +23,20 @@
 <script setup>
 import { ref } from 'vue';
 import { uploadChunk, uploadMerge, UploadService } from '@/api/upload';
+import { editEpisodesVideo } from '@/api/episode';
 import {UploadFilled} from "@element-plus/icons-vue";
 
 const file = ref(null);
 const uploadProgress = ref(0);
 const uploading = ref(false);
+const upTime = ref(0);
 
 const fileInput = ref(null);
 const emit = defineEmits(['uploaded']);
 const props =  defineProps({
   upUrl: String,
-  types: String
+  types: String,
+  eid: Number
 })
 
 const selectFile = () => {
@@ -43,19 +46,20 @@ const selectFile = () => {
 const onFileChange = async (event) => {
   file.value = event.target.files[0];
   if (props.types === 'img') {
-    await uploadImage();
+    await uploadImage('img');
   } else {
-    await uploadVideo();
+    // await uploadVideo();
+    await uploadImage('video');
   }
 };
 
 const uploadVideo = async () => {
   if (!file.value) {
-    alert('请选择一个文件上传');
+    ElMessage.error('请选择一个文件上传');
     return;
   }
 
-  const chunkSize = 2 * 1024 * 1024; // 分包大小
+  const chunkSize = 5 * 1024 * 1024; // 分包大小
   const totalChunks = Math.ceil(file.value.size / chunkSize); // 总分包数
   let chunksUploaded = 0; // 已经上传的分包个数
 
@@ -86,38 +90,86 @@ const uploadVideo = async () => {
       totalChunks: totalChunks
     }
     await uploadMerge(obj).then(()=> {
-    }).catch((mergeResponse) => {
-      if (mergeResponse.data.success) {
-        console.log('文件上传成功:', mergeResponse.data.ossUrl);
+    }).catch( async (response) => {
+      if (response.data.success) {
+        console.log(response.data.ossUrl)
         ElMessage.success('文件上传成功');
-        emit('uploaded', mergeResponse.data.ossUrl);
+        const obj = {
+          id: props.eid,
+          videoUrl: response.data.ossUrl
+        }
+        console.log(obj)
+        await editEpisodesVideo(obj).then(()=>{
+
+        const obj = {
+          url : response.data.ossUrl,
+          type : 'video'
+        }
+        emit('uploaded', obj);
+        })
       } else {
         ElMessage.error('文件上传失败');
       }
     });
-
-
   }
 
   uploading.value = false;
 };
 
-const uploadImage = async () => {
+const uploadImage = async (type) => {
   if (!file.value) {
-    alert('请选择一个图片上传');
+    ElMessage.warning('请选择一个图片上传');
     return;
   }
+  if (file.value.size > 50 * 1024 * 1024) {
+    ElMessage.warning('图片大小不能超过50MB');
+    return;
+  }
+  upTime.value = (file.value.size / 1024 / 1024 * 2.4).toFixed(1);
   const formData = new FormData();
   formData.append('file', file.value); // 假设您的服务器期望字段名为 'file'
+  if (type === 'video') {
+    uploading.value = true;
+    uploadProgress.value = 100;
+  }
 
   await UploadService(formData).then(()=>{
-  }).catch ((response)=> {
-    if(response.data.success) {
-      emit('uploaded', response.data.ossUrl);
+  }).catch (async (response)=> {
+    if (type === 'video') {
+      if (response.data.success) {
+        console.log(response.data.ossUrl)
+        ElMessage.success('文件上传成功');
+        const obj = {
+          id: props.eid,
+          videoUrl: response.data.ossUrl
+        }
+        console.log(obj)
+        await editEpisodesVideo(obj).then(()=>{
+
+        const obj = {
+          url : response.data.ossUrl,
+          type : 'video'
+        }
+        emit('uploaded', obj);
+        })
+      } else {
+        ElMessage.error('文件上传失败');
+      }
+      uploading.value = false;
+      uploadProgress.value = 0;
+    }else {
+      if(response.data.success) {
+      const obj = {
+        url : response.data.ossUrl,
+        type : 'img'
+      }
+      emit('uploaded', obj);
       ElMessage.success('文件上传成功');
     }else {
       ElMessage.error('文件上传失败');
     }
+    }
+
   })
 
   
@@ -154,6 +206,7 @@ const uploadImage = async () => {
 
 .upload-process-finish {
   font-family: 'Arial', sans-serif;
+  font-size: 10px;
   color: #333;
   background-color: #f5f5f5;
   padding: 5px;

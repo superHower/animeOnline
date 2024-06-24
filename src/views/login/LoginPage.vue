@@ -190,9 +190,13 @@ watch(isRegister, () => {
       </div>
    
     </el-col>
-    <div class="beian">
+    <!-- <div class="beian">
       <span>wwww.hower.fun | @ Developed by Hower | 网站备案号</span>
       <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">豫ICP备2023030938号</a>
+    </div> -->
+    <div class="beian"> Hower动漫 | ©2023-12-20 | Developed by Hower |
+      <span> 网站备案号：</span>
+        <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">	京ICP备2024063056号</a>
     </div>
   </el-row>
   

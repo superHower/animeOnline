@@ -1,11 +1,12 @@
 <script setup>
 import { ref } from 'vue'
 import { getDetailAnimeService, editAnimeService, addAnimeService, getAnimeListService } from '@/api/anime.js'
-import { getAnimeEpisodesService } from '@/api/episode.js'
+import { getAnimeEpisodesService, editEpisodesName } from '@/api/episode.js'
 import ImageUpload from '@/components/ImageUpload.vue'
 // 控制抽屉显示隐藏
 const visibleDrawer = ref(false)
 const isAdd = ref(false);
+const aid = ref(0)
 
 // 默认数据
 const defaultForm = {
@@ -39,8 +40,6 @@ const onPublish = async () => {
       visibleDrawer.value = false
       emit('update-list'); 
     })
-
-
   } else {  // 添加操作
     await addAnimeService(formModel.value).then(()=> {
       ElMessage.success('添加成功')
@@ -52,13 +51,21 @@ const onPublish = async () => {
 }
 
 
-const handleUploaded = (url) => {
-  console.log('Uploaded URL:', url);
-  formModel.value.imgUrl = url;
+const handleUploaded = async (data) => {
+  console.log('Uploaded URL:', data);
+  if(data.type === 'img') {
+    formModel.value.imgUrl = data.url;
+  }
+  else{
+    await getAnimeEpisodesService(aid.value).then((res) => {
+      formModel.value.episodes = res.data
+    })
+  }
 };
 
 const open = async (id) => {
   visibleDrawer.value = true // 显示抽屉
+  aid.value = id
 
   if (id) {
     isAdd.value = false
@@ -117,9 +124,9 @@ defineExpose({
             <el-input v-model="scope.row.name" placeholder="请输入剧集名称"></el-input>
           </template>
         </el-table-column>
-        <el-table-column label="剧集封面">
+        <el-table-column label="剧集视频">
           <template #default="scope">
-            <ImageUpload :upUrl="scope.row.videoUrl" :types="'video'" @uploaded="handleUploaded">
+            <ImageUpload :upUrl="scope.row.videoUrl" :eid="scope.row.id" :types="'video'"  @uploaded="handleUploaded">
             </ImageUpload>
           </template>
         </el-table-column>
