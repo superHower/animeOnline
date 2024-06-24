@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import { getDetailAnimeService, editAnimeService, addAnimeService, getAnimeListService } from '@/api/anime.js'
-import { getAnimeEpisodesService, editEpisodesName } from '@/api/episode.js'
+import { getDetailAnimeService, editAnimeService, addAnimeService } from '@/api/anime.js'
+import { getAnimeEpisodesService, editEpisodesName, addEpisodesService } from '@/api/episode.js'
 import ImageUpload from '@/components/ImageUpload.vue'
 // 控制抽屉显示隐藏
 const visibleDrawer = ref(false)
@@ -63,6 +63,31 @@ const handleUploaded = async (data) => {
   }
 };
 
+const handleEditName = async (id, name) => {
+  const obj = {
+    id: id,
+    name: name
+  }
+  await editEpisodesName(obj).then(() => {
+    ElMessage.success('修改成功')
+  })
+}
+const handelAddEpisode = async () => {
+  const obj = {
+    aid: aid.value,
+    number: formModel.value.episodes.length + 1,
+    name: '新剧集',
+    duration: 0,
+    videoUrl: ''
+  }
+  await addEpisodesService(obj).then(() => {
+    ElMessage.success('添加成功')
+    getAnimeEpisodesService(aid.value).then((res) => {
+      formModel.value.episodes = res.data
+    })
+  })
+}
+
 const open = async (id) => {
   visibleDrawer.value = true // 显示抽屉
   aid.value = id
@@ -94,9 +119,9 @@ defineExpose({
       v-model="visibleDrawer"
       :title="isAdd ? '增加动漫' : '修改动漫'"
       direction="rtl"
-      size="30%"
+      size="40%"
   >
-    <el-button @click="onPublish()" type="primary" style="position: absolute;top: 55px;">保存</el-button>
+    <el-button @click="onPublish()" type="primary" style="position: absolute;top: 55px; width: 45px;">保存</el-button>
     <el-form :model="formModel" ref="formRef" label-width="100px">
       <el-form-item label="名称" prop="name">
         <el-input v-model="formModel.name" placeholder="请输入动漫名称"></el-input>
@@ -117,11 +142,12 @@ defineExpose({
         </ImageUpload>
       </div>
 
+      <el-button @click="handelAddEpisode" type="primary">添加剧集</el-button>
       <el-table :data="formModel.episodes" height="300" border>
         <el-table-column type="index" label="序号"></el-table-column>
-        <el-table-column label="剧集名称">
+        <el-table-column label="剧集名称" prop="name">
           <template #default="scope">
-            <el-input v-model="scope.row.name" placeholder="请输入剧集名称"></el-input>
+            <el-input v-model="scope.row.name" @change="handleEditName(scope.row.id, scope.row.name)"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="剧集视频">
@@ -168,5 +194,11 @@ defineExpose({
   :deep(.ql-editor) {
     min-height: 200px;
   }
+}
+.el-form-item {
+  margin-bottom: 8px;
+}
+.el-drawer__header {
+  margin-bottom: 32px !important;
 }
 </style>
