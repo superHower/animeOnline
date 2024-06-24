@@ -95,10 +95,10 @@ const handleSelect = (index) => {
         <router-view></router-view>
       </div>
 
-      <div class="foot"> Hower动漫 | ©2023-12-20 | Developed by Hower |
+      <!-- <div class="foot"> Hower动漫 | ©2023-12-20 | Developed by Hower |
         <span> 网站备案号：</span>
           <a href="https://beian.miit.gov.cn/" target="https://beian.miit.gov.cn/">	京ICP备2024063056号</a>
-      </div>
+      </div> -->
     </el-container>
   </el-container>
 </template>
@@ -156,10 +156,10 @@ const handleSelect = (index) => {
     top: 60px;
   }
   .foot {
-    position: absolute;
+    position: relative;
+    top: calc(100% - 30px);
     width: 100%;
     height: 30px;
-    bottom: 0;
     display: flex;
     align-items: center;
 

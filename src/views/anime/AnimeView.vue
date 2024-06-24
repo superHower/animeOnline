@@ -124,7 +124,7 @@ const onReset = async() => {
     </template>
 
     <!--    条件查询表单  -->
-    <el-form :model="params" class="confForm" style="display: flex">
+    <el-form :model="params" class="confForm">
       <el-form-item>
         <div class="conf-label">地区：</div>
         <el-radio-group v-model="params.nation">
@@ -203,6 +203,7 @@ const onReset = async() => {
 }
 
 .confForm {
+   display: flex;
   .el-form-item {
     margin: 10px 0;
 
@@ -225,7 +226,9 @@ const onReset = async() => {
   /* 更改鼠标图标为指针 */
 }
 
-
+.el-form-item__content {
+  justify-content: flex-start;
+}
 
 .el-carousel {
   position: relative;
@@ -317,5 +320,21 @@ const onReset = async() => {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+@media (max-width: 1200px) {
+  .confForm {
+    flex-direction: column;
+  }
+  .conf-label {
+    margin-left: 20px !important;
+  }
+
+}
+@media (max-width: 1480px) {
+  .conf-label {
+    margin-left: 20px !important;
+  }
+
 }
 </style>

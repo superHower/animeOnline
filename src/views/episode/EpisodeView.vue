@@ -323,10 +323,6 @@ const handleChangeTab = (val) => {
               </div>
             </div >
 
-
-
-
-
           </div>
         </div>
     </div>
