@@ -9,10 +9,11 @@ import {
 } from '@element-plus/icons-vue'
 // import avatar from '@/assets/default.png'
 import { useUserStore } from '@/stores'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { reactive } from 'vue'
 
+const activeIndex = ref('1');
 const userStore = useUserStore()
 const router = useRouter()
 
@@ -49,6 +50,11 @@ const handleCommand = async (key) => {
 const goIndex = () => {
   router.push('/')
 }
+
+const handleSelect = (index) => {
+  console.log('选中的菜单项索引:', index);
+  // 可以在这里添加逻辑，比如根据索引切换页面等
+};
 </script>
 
 <template>

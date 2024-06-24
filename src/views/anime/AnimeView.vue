@@ -26,17 +26,16 @@ const animeEditRef = ref()
 const formSearch = ref({
   name: ''
 })
-
-const params = ref({
+const defaultParams = {
   nation: '',
   time: ''
-})
-const checkboxGroup1 = ref()
-const checkboxGroup2 = ref()
+}
+const params = ref({...defaultParams})
 
 onMounted(() => {
   getAnimeList()
 })
+
 const getAnimeList = async () => {
   loading.value = true
   const res = await getAnimeListService()
@@ -79,21 +78,22 @@ const openAnime = (id) => {
 }
 const onSearchByName = async () => {
   const input = formSearch.value.name
-  console.log(input)
   const res = await searchAnimeNameService(input)
-  console.log(res.data)
   animeList.value = res.data
-  console.log(animeList.value)
 }
 
 const onSearchByCondition = async () => {
-  params.value.nation = checkboxGroup1.value
-  params.value.time = checkboxGroup2.value
-  const res = await searchAnimeConditionService(params.value.nation, params.value.time)
-  animeList.value = res.data
-  console.log(animeList.value)
+  await searchAnimeConditionService(params.value.nation, params.value.time).then(res => {
+    animeList.value = res.data
+  })
 }
+const onReset = async() => {
+  params.value = {...defaultParams}
+  await searchAnimeConditionService(params.value.nation, params.value.time).then(res => {
+    animeList.value = res.data
+  })
 
+}
 
 </script>
 
@@ -104,10 +104,12 @@ const onSearchByCondition = async () => {
       <el-form :model="formSearch" style="margin-top: 20px">
         <el-form-item>
           <span>
-            <el-input v-model="formSearch.name" :prefix-icon="Search" placeholder="输入动漫名字" style="width: 200px" />
+            <el-input v-model="formSearch.name" clearable  placeholder="输入动漫名字" style="width: 300px">
+              <template #append>
+                <el-button :icon="Search" @click="onSearchByName" />
+              </template>
+            </el-input>
           </span>
-          <el-button type="primary" @click="onSearchByName" style="margin-left: 30px">搜索</el-button>
-          <el-button @click="onReset">重置</el-button>
         </el-form-item>
       </el-form>
     </template>
@@ -125,13 +127,13 @@ const onSearchByCondition = async () => {
     <el-form :model="params" class="confForm" style="display: flex">
       <el-form-item>
         <div class="conf-label">地区：</div>
-        <el-radio-group v-model="checkboxGroup1">
+        <el-radio-group v-model="params.nation">
           <el-radio-button v-for="n in nationList" :key="n" :label="n">{{ n }}</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
         <div class="conf-label">上映时间：</div>
-        <el-radio-group v-model="checkboxGroup2">
+        <el-radio-group v-model="params.time ">
           <el-radio-button v-for="t in timeList" :key="t" :label="t">{{ t }}</el-radio-button>
         </el-radio-group>
       </el-form-item>

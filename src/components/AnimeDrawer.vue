@@ -119,7 +119,7 @@ defineExpose({
         </el-table-column>
         <el-table-column label="剧集封面">
           <template #default="scope">
-            <ImageUpload :upUrl="scope.row.videoUrl" :types="'video'" @uploaded="handleUploaded(scope.row)">
+            <ImageUpload :upUrl="scope.row.videoUrl" :types="'video'" @uploaded="handleUploaded">
             </ImageUpload>
           </template>
         </el-table-column>

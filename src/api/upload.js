@@ -5,3 +5,11 @@ export const UploadService = (formData) => request.post('/upload/single', formDa
     'Content-Type': 'multipart/form-data',
   },
 });
+
+export const uploadChunk = (formData) => request.post('/upload/chunk', formData, {
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+});
+
+export const uploadMerge = (data) => request.post('/upload/merge', data);

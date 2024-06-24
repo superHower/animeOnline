@@ -7,7 +7,7 @@ const baseURL = import.meta.env.MODE === 'development' ? 'http://43.143.243.137:
 const instance = axios.create({
   // TODO 1. 基础地址，超时时间
   baseURL,
-  timeout: 5000
+  timeout: 30000
 })
 
 // 请求拦截器
