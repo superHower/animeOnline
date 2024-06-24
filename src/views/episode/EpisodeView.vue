@@ -62,6 +62,7 @@ onMounted(() => {
   getAnimeInfo()
   getCommentList()
   getUAInfo()
+
 })
 
 /* 查询 */
@@ -227,7 +228,11 @@ const handleChangeTab = (val) => {
           <div class="display-barrage">{{ animeInfo.name }}</div>
           <div class="display-barrage real">{{barrageList[0].barrage}}</div>
           <div class="display-video" ref="display">
-            <VideoPlayer :src="videoSrc" :second="3" :width="videoWidth" :height="videoHeight" />
+            <VideoPlayer v-if="videoSrc && EpisodeId" :src="videoSrc" :second="3" :width="videoWidth" :height="videoHeight" />
+            <div v-else class="error" :style="{ width: videoPlayerWidth + 'px', height: videoPlayerHeight + 'px' }">
+              <div v-if="!EpisodeId && !videoSrc">请选择一个视频!</div>
+              <div v-else>该视频不存在!</div>
+            </div>
           </div>
       
           <div class="display-footer">
@@ -387,6 +392,9 @@ const handleChangeTab = (val) => {
       justify-content: center;
       align-items: center;
       box-shadow: 0 0 8px var(--bpx-box-shadow, #e5e9ef);
+      .error {
+        color: #5352bf;
+      }
     }
 
     .display-footer {
