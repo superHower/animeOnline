@@ -1,5 +1,5 @@
 <script setup>
-import { Edit, Opportunity, Search, StarFilled } from '@element-plus/icons-vue'
+import { Edit, Opportunity, Search, StarFilled,CirclePlusFilled, List } from '@element-plus/icons-vue'
 import PageContainer from '@/components/PageContainer.vue'
 import {
   getAnimeListService,
@@ -104,7 +104,7 @@ const onReset = async() => {
       <el-form :model="formSearch" style="margin-top: 20px">
         <el-form-item>
           <span>
-            <el-input v-model="formSearch.name" clearable  placeholder="输入动漫名字" style="width: 300px">
+            <el-input v-model="formSearch.name" clearable  placeholder="请输入动漫名字" class="search-input">
               <template #append>
                 <el-button :icon="Search" @click="onSearchByName" />
               </template>
@@ -116,10 +116,10 @@ const onReset = async() => {
 
     <template #extra>
       <div class="addAnime">
-        <el-button plain type="danger" @click="onFavorite()">❤ 我的喜欢</el-button>
-        <el-button plain type="warning" :icon="Edit" @click="onCollection()">我的收藏</el-button>
-        <el-button plain type="primary" :icon="Edit" @click="getAnimeList()">全部动漫</el-button>
-        <el-button plain type="success" :icon="Edit" @click="onAddAnime()">增加动漫</el-button>
+        <el-button plain type="danger" class="btn-top" @click="onFavorite()">❤ <span>我的喜欢</span></el-button>
+        <el-button plain type="warning" class="btn-top" :icon="StarFilled" @click="onCollection()"><span>我的收藏</span></el-button>
+        <el-button plain type="primary" class="btn-top" :icon="List" @click="getAnimeList()"><span>全部动漫</span></el-button>
+        <el-button plain type="success" class="btn-top vip-btn" :icon="CirclePlusFilled" @click="onAddAnime()"><span>增加动漫</span></el-button>
       </div>
     </template>
 
@@ -127,19 +127,24 @@ const onReset = async() => {
     <el-form :model="params" class="confForm">
       <el-form-item>
         <div class="conf-label">地区：</div>
-        <el-radio-group v-model="params.nation">
+        <el-radio-group class="big-width" v-model="params.nation">
           <el-radio-button v-for="n in nationList" :key="n" :label="n">{{ n }}</el-radio-button>
         </el-radio-group>
+        <el-select class="small-width" style="width: 195px" v-model="params.nation" placeholder="请选择">
+          <el-option v-for="n in nationList" :key="n" :label="n" :value="n"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <div class="conf-label">上映时间：</div>
-        <el-radio-group v-model="params.time ">
+        <el-radio-group class="big-width" v-model="params.time ">
           <el-radio-button v-for="t in timeList" :key="t" :label="t">{{ t }}</el-radio-button>
         </el-radio-group>
+        <el-select class="small-width" style="width: 195px" v-model="params.time" placeholder="请选择">
+          <el-option v-for="n in timeList" :key="n" :label="n" :value="n"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
-        <div class="conf-label"></div>
-        <el-button type="primary" @click="onSearchByCondition">条件搜索</el-button>
+        <el-button type="primary" @click="onSearchByCondition" style="margin-left: 10px">条件搜索</el-button>
         <el-button @click="onReset">重置</el-button>
       </el-form-item>
     </el-form>
@@ -159,7 +164,7 @@ const onReset = async() => {
           <div style="padding: 14px">
             <div class="card-top">
               <span>{{ anime.name }}</span>
-              <span class="time">时间：{{ anime.time.substring(0, 10) }}</span>
+              <span class="time vip-btn">时间：{{ anime.time.substring(0, 10) }}</span>
               <span class="time">{{ anime.nation }}</span>
             </div>
             <div class="card-middle">
@@ -167,21 +172,19 @@ const onReset = async() => {
                 {{ anime.info.length > 40 ? anime.info.substring(0, 40) + '...' : anime.info }}
               </div>
               <div class="card-option">
-                <el-button plain type="warning" size="small" :icon="Edit"
-                  @click="onEditAnime(anime.id)">编辑动漫</el-button>
-                <el-button plain type="danger" size="small" :icon="Edit" style="margin-left: 0"
-                  @click="onDeleteArticle(anime.id)">删除动漫</el-button>
+                <el-button plain type="warning" size="small" class="vip-btn" :icon="Edit" @click="onEditAnime(anime.id)">编辑动漫</el-button>
+                <el-button plain type="danger" size="small" class="vip-btn" :icon="Edit" style="margin-left: 0" @click="onDeleteArticle(anime.id)">删除动漫</el-button>
               </div>
             </div>
             <div class="card-bottom">
               <el-row>
-                <el-col :span="12"> <el-icon color="skyBlue"><StarFilled /> </el-icon>评分：{{ anime.ranking }}  </el-col>
-                <el-col :span="12"> <el-icon color="red"> <Opportunity /> </el-icon>点赞数：{{ anime.likeCnt }}  </el-col>
+                <el-col :span="12"> <el-icon class="vip-btn" color="skyBlue"><StarFilled /> </el-icon><span class="vip-icon">总评分：{{ anime.ranking }}</span>  </el-col>
+                <el-col :span="12"> <el-icon class="vip-btn" color="red"> <Opportunity /> </el-icon><span class="vip-icon">点赞数：{{ anime.likeCnt }}</span>  </el-col>
               </el-row>
 
               <el-row>
-                <el-col :span="12"> <el-icon color="darkOrange"> <StarFilled /> </el-icon>收藏数：{{ anime.cCnt }}</el-col>
-                <el-col :span="12"> <el-icon color="darkOrange">  <StarFilled /> </el-icon>总集数：{{ anime.count }}</el-col>
+                <el-col :span="12"> <el-icon class="vip-btn" color="darkOrange"> <StarFilled /> </el-icon><span class="vip-icon">收藏数：{{ anime.cCnt }}</span></el-col>
+                <el-col :span="12"> <el-icon class="vip-btn" color="darkOrange">  <StarFilled /> </el-icon><span class="vip-icon">总集数：{{ anime.count }}</span></el-col>
               </el-row>
             </div>
           </div>
@@ -266,6 +269,9 @@ const onReset = async() => {
     background-color: #fae5fa;
   }
 }
+.search-input {
+  width: 100%;
+}
 
 .grid-container {
   display: grid;
@@ -336,5 +342,44 @@ const onReset = async() => {
     margin-left: 20px !important;
   }
 
+}
+@media (max-width: 1000px) {
+  .el-button span {
+    display: none;
+  }
+  .btn-top {
+    border-radius: 50%;
+  }
+
+}
+@media (max-width: 648px) {
+  .search-input {
+    width: 168px;
+    margin-left: 20px;
+  }
+  .btn-top {
+    width: 33px;
+  }
+  .vip-btn {
+    display: none;
+  }
+  .vip-icon {
+    font-size: 12px;
+  }
+
+  .small-width {
+    display: block;
+  }
+  .big-width {
+    display: none;
+  }
+}
+@media (min-width: 648px) {
+  .small-width {
+    display: none;
+  }
+  .big-width {
+    display: block;
+  }
 }
 </style>

@@ -38,4 +38,11 @@ defineProps({
 .el-card {
   --el-card-padding: 0px
 }
+
+@media (max-width: 648px) {
+  .header-title{
+    display: none;
+  }
+  
+}
 </style>

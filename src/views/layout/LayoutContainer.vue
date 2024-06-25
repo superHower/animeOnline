@@ -5,7 +5,7 @@ import {
   HomeFilled,
   EditPen,
   SwitchButton,
-  CaretBottom
+  Avatar
 } from '@element-plus/icons-vue'
 // import avatar from '@/assets/default.png'
 import { useUserStore } from '@/stores'
@@ -63,19 +63,14 @@ const handleSelect = (index) => {
       <div class="header">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
           <el-menu-item index="1" @click="goIndex"><el-icon><HomeFilled /></el-icon>首页</el-menu-item>
-          <el-menu-item index="2"><el-icon><HomeFilled /></el-icon>查看动漫</el-menu-item>
           <el-menu-item index="6"><el-icon><HomeFilled /></el-icon>关于</el-menu-item>
         </el-menu>
 
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
-          <span class="el-dropdown__box">
-            <el-menu-item index="1"><el-icon><HomeFilled /></el-icon>账号：<strong> {{ info.account }}</strong></el-menu-item>
-            <el-menu-item index="2"><el-icon><HomeFilled /></el-icon>用户名：<strong> {{ info.name  }}</strong></el-menu-item>
-            <el-menu-item index="3"><el-icon><HomeFilled /></el-icon>性别：<strong> {{ info.gender  }}</strong></el-menu-item>
-          </span>
+          
           <el-dropdown placement="bottom-end" @command="handleCommand">
             <!-- 展示给用户，默认看到的 -->
-            <span class="el-dropdown__box"><el-icon><CaretBottom /></el-icon></span>
+            <span class="el-dropdown__box"><div class="username"> {{ info.name  }}</div></span>
 
             <!-- 折叠的下拉部分 -->
             <template #dropdown>
@@ -132,6 +127,17 @@ const handleSelect = (index) => {
     }
     .el-menu-demo {
        height: 40px;
+       margin-right: 20px;
+       .username {
+        position: relative;
+        margin-right: 5px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #f1e8d5;
+        border: 1px solid;
+        padding: 10px;
+        border-radius: 10px;
+       }
     }
 
     .el-dropdown__box {
