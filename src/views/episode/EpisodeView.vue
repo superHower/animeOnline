@@ -279,8 +279,7 @@ const handleChangeTab = (val) => {
                   </span>
                 </div>
               </div>
-
-
+              
               <el-table :data="episodeList" :height="tableHeight" @row-click="openEpisode">
                 <el-table-column prop="number" label="集数" width="80" />
                 <el-table-column prop="name" label="名字" width="200" />
@@ -524,6 +523,28 @@ const handleChangeTab = (val) => {
       }
     }
   }
+
+}
+
+
+@media (max-width: 1000px) {
+  .common-layout {
+    flex-direction: column;
+    align-items: center;
+    display: block;
+    .episode-main-left {
+      display: block;
+      width: 90%;
+      height: 40%;
+    }
+    .episode-main-right {
+      width: 90%;
+      .info {
+        height: 40px !important;
+      }
+    }
+  }
+
 
 }
 </style>

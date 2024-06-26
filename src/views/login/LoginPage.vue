@@ -1,12 +1,14 @@
 <script setup>
 import {userRegisterService, userLoginService} from '@/api/user.js'
 import { User, Lock } from '@element-plus/icons-vue'
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import {useUserStore} from "@/stores";
+import {userGetListService} from "@/api/user"
 
 const form = ref()
 const isRegister = ref(false)
+const userNum = ref(0)
 
 // 用于提交的， 整个的form数据对象
 const formModel = ref({
@@ -16,7 +18,6 @@ const formModel = ref({
   repassword: '',
   gender: '',
   age: '',
-
 })
 
 // rules: 整个表单的校验规则
@@ -114,6 +115,27 @@ const login = async () => {
   router.push('/')
 }
 
+onMounted(async ()=> {
+  const res = await userGetListService()
+  userNum.value = res.data.length
+
+  window.addEventListener('resize', resizeListener);
+  updateWindowWidth();
+
+})
+
+
+const windowWidth = ref(window.innerWidth);
+
+function updateWindowWidth() {
+  windowWidth.value = window.innerWidth;
+}
+
+const resizeListener = () => updateWindowWidth();
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resizeListener);
+});
 
 // 监视切换的时候，重置表单内容
 watch(isRegister, () => {
@@ -131,8 +153,8 @@ watch(isRegister, () => {
 
 <template>
   <el-row class="login-page">
-    <el-col :span="8" :offset="3" class="bg"></el-col>
-    <el-col :span="8" :offset="1" class="form">
+    <el-col :span="windowWidth < 1000 ? 0 : 8" :offset="3" class="bg"></el-col>
+    <el-col :span="windowWidth < 1000 ? 16 : 8" :offset="1" class="form">
       <!-- 注册相关表单 -->
 
       <el-form :model="formModel" :rules="rules" ref="form" size="large" autocomplete="off" v-if="isRegister">
@@ -170,7 +192,7 @@ watch(isRegister, () => {
 
       <!-- 登录相关表单 -->
       <el-form :model="formModel" :rules="rules" ref="form" size="large" autocomplete="off" v-else>
-        <el-form-item><h1>欢迎登录</h1></el-form-item>
+        <el-form-item><h1>欢迎你！第<span class="typing">{{ userNum }}</span> 位来访者</h1></el-form-item>
         <el-form-item prop="account"><el-input v-model="formModel.account" :prefix-icon="User" placeholder="请输入手机号"></el-input></el-form-item>
         <el-form-item prop="pwd"><el-input v-model="formModel.pwd" name="password" :prefix-icon="Lock" type="password" placeholder="请输入密码"></el-input></el-form-item>
         <el-form-item class="flex"><div class="flex"><el-checkbox>记住我</el-checkbox><el-link type="primary" :underline="false">忘记密码？</el-link></div></el-form-item>
@@ -179,14 +201,22 @@ watch(isRegister, () => {
       </el-form>
       <div style="height: 200px"></div>
     </el-col>
-    <el-col :span="3" :offset="1">
+    <el-col :span="3" :offset="windowWidth < 1000 ? 2 : 1">
       <div class="author">
-        <div>开发者</div>
-        <a href="https://github.com/superHower" target="_blank" rel="noopener noreferrer">
-          <svg height="50" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="50" data-view-component="true" class="octicon octicon-mark-github v-align-middle color-fg-default">
-            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
-          </svg>
-        </a>
+        <div style="margin-bottom: 10px">开发者</div>
+
+          <a href="https://github.com/superHower" target="_blank" rel="noopener noreferrer">
+            <svg height="50" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="50" data-view-component="true" class="octicon octicon-mark-github v-align-middle color-fg-default">
+              <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+            </svg>
+          </a>
+          <div class="line"></div>
+          <div class="kuang">
+
+          </div>
+          <div class="tiao"></div>
+
+
       </div>
    
     </el-col>
@@ -224,6 +254,7 @@ watch(isRegister, () => {
     height: 80%;
   
     background: url('@/assets/image/粉色2.jpg') no-repeat center / 100% 100%;
+    background-size: contain;
     border-radius: 0 20px 20px 0;
   }
   .form {
@@ -251,7 +282,39 @@ watch(isRegister, () => {
   .author {
     display: flex;
     justify-content: flex-start;
-    margin-top: 150px;
+    margin-top: 50px;
+    flex-direction: column;
+    margin-left: 20%;
+    .line {
+      height: 165px;
+      width: 1px;
+      position: relative;
+      top: -20px;
+      left: 6px;
+      border-left: 1px solid;
+    }
+    .kuang {
+      position: relative;
+      top: -25px;
+      left: 6px;
+      width: 45px;
+      height: 65px;
+      border-left: 1px solid;
+      animation: bounce 2s infinite;
+    }
+    .tiao {
+      position: relative;
+      top: -40px;
+      left: 6px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #189224;
+      animation: bounce 2s infinite;
+      
+      background-color: #1bde2f;
+    }
+
   }
   .beian {
     position: absolute;
@@ -270,5 +333,43 @@ watch(isRegister, () => {
       margin: 0 10px;
     }
   }
+  .el-input {
+    --el-input-border-radius: 30px
+  }
+  .el-button--large {
+    border-radius: 30px;
+    --el-button-bg-color: rgb(43, 162, 209);
+  }
+  .el-form {
+    border: 1px solid #bdb7aa;
+    border-radius: 20px;
+    padding: 15px;
+  }
+
 }
+
+// 文字打字效果
+.typing {
+  display: inline-block;
+  opacity: 0;
+  animation: typingAnimation 2s steps(10) forwards;
+  color: #bc7c1e;
+}
+
+@keyframes typingAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-60px); }
+  60% { transform: translateY(-20px); }
+}
+
 </style>
