@@ -8,7 +8,7 @@ import {
   likeService, collectService, rankService, getUaInfoService, AddUaService
 } from '@/api/anime.js'
 import { ref } from 'vue'
-import { onMounted, } from 'vue'
+import { onMounted, onBeforeUnmount} from 'vue'
 import { useUserStore } from '@/stores'
 
 import VideoPlayer from '@/components/VideoPlayer.vue'
@@ -33,6 +33,9 @@ const display = ref(null); // 绑定视频div
 const videoWidth = ref(0);
 const videoHeight = ref(0);
 const tableHeight = ref(0)
+
+const windowWidth = ref(window.innerWidth);
+const resizeListener = () => updateWindowWidth();
 
 const commentForm = ref({
   content: '',
@@ -63,7 +66,20 @@ onMounted(() => {
   getCommentList()
   getUAInfo()
 
+  window.addEventListener('resize', resizeListener);
+  updateWindowWidth();
+
 })
+
+function updateWindowWidth() {
+  windowWidth.value = window.innerWidth;
+}
+
+
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resizeListener);
+});
 
 /* 查询 */
 const getEpisodeList = async () => {
@@ -229,7 +245,7 @@ const handleChangeTab = (val) => {
           <div class="display-barrage real">{{barrageList[0].barrage}}</div>
           <div class="display-video" ref="display">
             <VideoPlayer v-if="videoSrc && EpisodeId" :src="videoSrc" :second="3" :width="videoWidth" :height="videoHeight" />
-            <div v-else class="error" :style="{ width: videoPlayerWidth + 'px', height: videoPlayerHeight + 'px' }">
+            <div v-else class="error" :style="{ width: videoWidth + 'px', height: videoHeight + 'px' }">
               <div v-if="!EpisodeId && !videoSrc">请选择一个视频!</div>
               <div v-else>该视频不存在!</div>
             </div>
@@ -238,17 +254,15 @@ const handleChangeTab = (val) => {
           <div class="display-footer">
             <div>
               <el-form :model="barrageForm">
-                <el-form-item>
-                  <el-col :span="18">
-                    <el-input placeholder="请输入你的弹幕吧" v-model="barrageForm.barrage"></el-input>
-                  </el-col>
-                  <el-col :span="4" :offset="2">
-                    <el-button type="primary" round @click="onSendBarrage"><strong>发弹幕</strong></el-button>
-                  </el-col>
+                <el-form-item> 
+                  <div style="display: flex;justify-content: space-around;padding: 0 10px;">
+                    <el-input placeholder="弹幕吧" style="width: 36%;" v-model="barrageForm.barrage"></el-input>
+                    <el-button type="primary" round @click="onSendBarrage" ><strong>发送弹幕</strong></el-button>
+                    <el-button type="warning" round @click="getBarrageList">查看弹幕</el-button>
+                  </div>
                 </el-form-item>
               </el-form>
             </div>
-            <el-button type="warning" round @click="getBarrageList">查看弹幕</el-button>
           </div>
 
         </div>
@@ -280,7 +294,7 @@ const handleChangeTab = (val) => {
                 </div>
               </div>
               
-              <el-table :data="episodeList" :height="tableHeight" @row-click="openEpisode">
+              <el-table :data="episodeList" :height="windowWidth < 1000 ? tableHeight * 1.8 : tableHeight" @row-click="openEpisode">
                 <el-table-column prop="number" label="集数" width="80" />
                 <el-table-column prop="name" label="名字" width="200" />
                 <el-table-column prop="duration" label="时长" width="80" />
@@ -389,6 +403,7 @@ const handleChangeTab = (val) => {
       box-shadow: 0 0 8px var(--bpx-box-shadow, #e5e9ef);
       .error {
         color: #5352bf;
+        text-align: center;
       }
     }
 
@@ -529,9 +544,8 @@ const handleChangeTab = (val) => {
 
 @media (max-width: 1000px) {
   .common-layout {
-    flex-direction: column;
-    align-items: center;
     display: block;
+    margin-left: 10%;
     .episode-main-left {
       display: block;
       width: 90%;
@@ -539,6 +553,12 @@ const handleChangeTab = (val) => {
     }
     .episode-main-right {
       width: 90%;
+      .episode-info-top {
+        display: none;
+      }
+      .episode-info-main {
+        margin-top: 12%;
+      }
       .info {
         height: 40px !important;
       }
