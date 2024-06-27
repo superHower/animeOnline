@@ -314,28 +314,16 @@ const handleChangeTab = (val) => {
               </el-form>
               <div class="comment-detail">
                 <div v-for="(c, index) in commentList" :key="index" class="comment-detail-box">
-                  <el-descriptions class="margin-top" :column="2" border>
-                    <el-descriptions-item>
-                      <template #label><div class="cell-item"><el-icon> <User /></el-icon>用户</div> </template>
-                      {{ c.userName }}
-                    </el-descriptions-item>
-                    <el-descriptions-item>
-                      <template #label> <div class="cell-item"><el-icon><Stopwatch /></el-icon>时间</div></template>
-                      {{ c.time }}
-                    </el-descriptions-item>
-                    <el-descriptions-item>
-                      <template #label><div class="cell-item"><el-icon><List /></el-icon>评论</div></template>
-                      <div style="font-size: 18px;border: #22d5ce solid 2px; padding: 5px">
-                        <strong>{{ c.content }}</strong>
-                      </div>
-                    </el-descriptions-item>
-                  </el-descriptions>
+                  <div class="avatar"></div>
+                  <div class="comment-right">
+                    <div class="user">{{ c.userName }}</div>
+                    <div class="comment"><el-icon><List /></el-icon>{{ c.content }}</div>
+                    <div class="time">{{ c.time.slice(0, 16) }}</div>
+                  </div>
+
                 </div>
-
-
               </div>
             </div >
-
           </div>
         </div>
     </div>
@@ -528,12 +516,39 @@ const handleChangeTab = (val) => {
           margin-bottom: 10px;
           padding: 10px;
           border: 1px solid #ccc;
-    
-          .cell-item {
-            el-icon {
-              margin-right: 5px;
-            }
+          border-radius: 10px;
+          display: flex;
+          .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 10px;
+            margin-top: 0;
+            background-color: grey;
           }
+          .comment-right {
+            width: calc(100% - 50px);
+            height: 80px;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            .user {
+              height: 20px;
+
+            }
+            .comment {
+              font-size: 14px;
+
+            }
+            .time {
+              margin-top: 0;
+              height: 20px
+            }
+
+          }
+        
+  
         }
       }
     }
@@ -542,10 +557,11 @@ const handleChangeTab = (val) => {
 }
 
 
-@media (max-width: 1000px) {
+@media (max-width: 648px) {
   .common-layout {
     display: block;
     margin-left: 10%;
+    overflow: auto;
     .episode-main-left {
       display: block;
       width: 90%;

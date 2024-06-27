@@ -119,24 +119,30 @@ defineExpose({
       v-model="visibleDrawer"
       :title="isAdd ? '增加动漫' : '修改动漫'"
       direction="rtl"
-      size="40%"
+      size="70%"
   >
     <el-button @click="onPublish()" type="primary" style="position: absolute;top: 55px; width: 45px;">保存</el-button>
     <el-form :model="formModel" ref="formRef" label-width="100px">
       <el-form-item label="名称" prop="name">
         <el-input v-model="formModel.name" placeholder="请输入动漫名称"></el-input>
       </el-form-item>
-      <el-form-item label="地区" prop="nation">
-        <el-input v-model="formModel.nation"></el-input>
-      </el-form-item>
-      <el-form-item label="上映时间" prop="time">
-        <el-date-picker v-model="formModel.time" type="date" placeholder="选择日期" style="width: 100%"/>
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="地区" prop="nation">
+            <el-input v-model="formModel.nation"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="时间" prop="time" label-width="40px">
+            <el-date-picker v-model="formModel.time" type="date" placeholder="选择日期" style="width: 100%"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="简介" prop="info">
         <el-input v-model="formModel.info" type="textarea"></el-input>
       </el-form-item>
 <!--      上传-->
-      <span style="padding: 10px"></span>选择封面
+      <span style="padding: 10px" ></span>选择封面
       <div style="margin-left: 100px;">     
         <ImageUpload :upUrl="formModel.imgUrl" :types="'img'" @uploaded="handleUploaded" >
         </ImageUpload>
@@ -201,4 +207,6 @@ defineExpose({
 .el-drawer__header {
   margin-bottom: 32px !important;
 }
+
+
 </style>

@@ -159,23 +159,22 @@ watch(isRegister, () => {
 
       <el-form :model="formModel" :rules="rules" ref="form" size="large" autocomplete="off" v-if="isRegister">
         <h3><strong>欢迎注册</strong></h3>
+        <el-form-item prop="name"><el-input v-model="formModel.name" :prefix-icon="User" placeholder="请输入昵称"></el-input>
+        </el-form-item>
+ 
         <el-row>
-          <el-col :span="13">
-            <el-form-item prop="name"><el-input v-model="formModel.name" :prefix-icon="User" placeholder="请输入昵称"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10" :offset="1">
-            <el-form-item prop="gender">
-              <el-select v-model="formModel.gender" placeholder="请选择性别">
-                <el-option label="男" value="男" />
-                <el-option label="女" value="女" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="10">
+          <el-col :span="14">
             <el-form-item prop="age"><el-input v-model="formModel.age" :prefix-icon="User" placeholder="请输入年龄"></el-input></el-form-item>
+          </el-col> 
+          <el-col :span="8" :offset="2">
+            <el-form-item prop="gender">
+              <el-radio-group v-model="formModel.gender" size="small">
+                <el-radio-button :label="'男'" value="男">
+                </el-radio-button>
+                <el-radio-button :label="'女'" value="女">
+                </el-radio-button>
+              </el-radio-group>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-form-item prop="pwd"><el-input v-model="formModel.pwd" :prefix-icon="Lock" type="password" placeholder="请输入密码"></el-input></el-form-item>

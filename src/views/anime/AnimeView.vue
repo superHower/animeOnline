@@ -169,10 +169,10 @@ const onReset = async() => {
             </div>
             <div class="card-middle">
               <div class="info">
-                {{ anime.info.length > 40 ? anime.info.substring(0, 40) + '...' : anime.info }}
+                {{ anime.info.length > 20 ? anime.info.substring(0, 20) + '...' : anime.info }}
               </div>
               <div class="card-option">
-                <el-button plain type="warning" size="small" class="vip-btn" :icon="Edit" @click="onEditAnime(anime.id)">编辑动漫</el-button>
+                <el-button plain type="warning" size="small" :icon="Edit" @click="onEditAnime(anime.id)"><div class="vip-btn">编辑动漫</div></el-button>
                 <el-button plain type="danger" size="small" class="vip-btn" :icon="Edit" style="margin-left: 0" @click="onDeleteArticle(anime.id)">删除动漫</el-button>
               </div>
             </div>

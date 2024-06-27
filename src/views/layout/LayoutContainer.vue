@@ -63,7 +63,7 @@ const handleSelect = (index) => {
       <div class="header">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
           <el-menu-item index="1" @click="goIndex"><el-icon><HomeFilled /></el-icon>首页</el-menu-item>
-          <el-menu-item index="6"><el-icon><HomeFilled /></el-icon>关于</el-menu-item>
+          <el-menu-item index="6"><el-icon><HomeFilled /></el-icon>关于ME</el-menu-item>
         </el-menu>
 
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false" @select="handleSelect">
